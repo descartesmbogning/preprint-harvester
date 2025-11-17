@@ -2,9 +2,9 @@
 
 ### **Crossref × DataCite × OpenAlex — Unified Metadata Harvester for Preprint Servers**
 
-**Author:** .....  
+**Authors:** .....  
 **License:** MIT  
-**Status:** Public Release v1.0
+**Status:** Public Release v0.0
 
 ---
 
