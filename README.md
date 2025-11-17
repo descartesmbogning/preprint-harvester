@@ -261,23 +261,6 @@ preprint-harvester/
 
 ---
 
-# 📖 Example Notebook
-
-See:
-
-```text
-/examples/example_usage.ipynb
-```
-
-It includes:
-
-* Loading rules  
-* Running dry-run  
-* Fetching Crossref, DataCite, OpenAlex  
-* Merging results  
-* Displaying metadata  
-
----
 
 # 🧪 Testing
 
