@@ -250,33 +250,11 @@ preprint-harvester/
 ├── scripts/
 │   └── run_harvest_from_sheet.py
 │
-├── examples/
-│   ├── example_rules_sheet.csv
-│   └── example_usage.ipynb
-│
-├── tests/
-│
 └── data/
 ```
 
 ---
 
-
-# 🧪 Testing
-
-Minimal example:
-
-```bash
-pytest tests/
-```
-
-You can add mock-based tests for:
-
-* Parameter building  
-* Filtering  
-* Fake API responses  
-
----
 
 # ⚠️ Troubleshooting
 
