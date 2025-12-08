@@ -2,9 +2,9 @@
 
 ### **Crossref × DataCite × OpenAlex — Unified Metadata Harvester for Preprint Servers**
 
-**Authors:** .....  
+**Author:** .....  
 **License:** MIT  
-**Status:** Public Release v0.0
+**Status:** Public Release v1.0
 
 ---
 
@@ -250,11 +250,50 @@ preprint-harvester/
 ├── scripts/
 │   └── run_harvest_from_sheet.py
 │
+├── examples/
+│   ├── example_rules_sheet.csv
+│   └── example_usage.ipynb
+│
+├── tests/
+│
 └── data/
 ```
 
 ---
 
+# 📖 Example Notebook
+
+See:
+
+```text
+/examples/example_usage.ipynb
+```
+
+It includes:
+
+* Loading rules  
+* Running dry-run  
+* Fetching Crossref, DataCite, OpenAlex  
+* Merging results  
+* Displaying metadata  
+
+---
+
+# 🧪 Testing
+
+Minimal example:
+
+```bash
+pytest tests/
+```
+
+You can add mock-based tests for:
+
+* Parameter building  
+* Filtering  
+* Fake API responses  
+
+---
 
 # ⚠️ Troubleshooting
 
