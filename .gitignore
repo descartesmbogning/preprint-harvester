@@ -23,10 +23,14 @@ ENV/
 # Data files (DO NOT version harvested data)
 # ============================================================
 data/
+data_old/
 datasets/
 outputs/
 exports/
 downloads/
+docs/
+by_server/
+all_backends/
 
 # Large research outputs
 *.csv
@@ -98,3 +102,8 @@ dist/
 # ============================================================
 .cache/
 vscode_scripts.txt
+# Large local datasets
+/data_old/
+*.csv.gz
+*.parquet
+*.pkl
