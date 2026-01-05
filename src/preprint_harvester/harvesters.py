@@ -5,7 +5,7 @@ import re
 import requests
 import pandas as pd
 from datetime import datetime
-from urllib.parse import urlparse, parse_qs, quote
+from urllib.parse import urlparse, parse_qs, quote, unquote
 from typing import Any, Dict, Optional, Union
 from html import unescape
 
@@ -661,6 +661,146 @@ def _funders_from_openalex(funders_json_str: str | None) -> tuple[str | None, in
     flat = _join_unique(names)
     return flat, (len(names) if names else None)
 
+
+# DOI normalization and merging -----------------------
+_DOI_RE = re.compile(r"(10\.\d{4,9}/[^\s\"<>]+)", re.IGNORECASE)
+
+def normalize_doi(x: str) -> str | None:
+    if not x:
+        return None
+    x = str(x).strip()
+    x = unquote(x)
+    x = x.replace("https://doi.org/", "").replace("http://doi.org/", "")
+    x = x.replace("doi:", "").strip()
+    m = _DOI_RE.search(x)
+    if not m:
+        return None
+    return m.group(1).lower()
+
+def merge_dois(*values) -> str:
+    """Merge any number of DOI containers/strings into one ';'-joined string."""
+    out = []
+    seen = set()
+
+    def add_one(v):
+        d = normalize_doi(v)
+        if d and d not in seen:
+            seen.add(d)
+            out.append(d)
+
+    for v in values:
+        if not v:
+            continue
+        if isinstance(v, str):
+            # allow ';' separated strings
+            parts = [p.strip() for p in v.split(";")] if ";" in v else [v]
+            for p in parts:
+                add_one(p)
+        elif isinstance(v, (list, tuple, set)):
+            for item in v:
+                add_one(item)
+        else:
+            add_one(v)
+
+    return ";".join(out)
+
+# Relation extraction ---------------------------------------
+VERSION_REL_KEYS = {
+    # classic version relations
+    "is-version-of",
+    "has-version",
+
+    # Crossref "updates" relations (your key requirement)
+    "updated-by",
+    "updated-to",
+    "updated-from",
+    "update-to",
+    "update-from",
+
+    # optional: sometimes appears as "is-updated-by" / "updates" in some metadata
+    "is-updated-by",
+    "updates",
+}
+
+PREPRINT_REL_KEYS = {"is-preprint-of", "has-preprint"}
+REVIEW_REL_KEYS    = {"has-review", "is-reviewed-by"}  # keep what you use
+
+def _extract_dois_from_relation_value(rel_value):
+    """rel_value can be list/dict/str; returns list of normalized dois."""
+    dois = []
+
+    def add(v):
+        d = normalize_doi(v)
+        if d:
+            dois.append(d)
+
+    if not rel_value:
+        return dois
+
+    if isinstance(rel_value, str):
+        add(rel_value)
+        return dois
+
+    if isinstance(rel_value, dict):
+        # sometimes a single object
+        _id = rel_value.get("id") or rel_value.get("DOI") or rel_value.get("doi")
+        add(_id)
+        return dois
+
+    if isinstance(rel_value, list):
+        for item in rel_value:
+            if isinstance(item, str):
+                add(item)
+                continue
+            if isinstance(item, dict):
+                _id = item.get("id") or item.get("DOI") or item.get("doi")
+                # if id-type exists, respect it, but still try to parse
+                add(_id)
+            else:
+                add(item)
+        return dois
+
+    # fallback
+    add(rel_value)
+    return dois
+
+
+def _extract_relations_crossref(relation_obj: dict | None):
+    """
+    Returns: (is_preprint_of, has_preprint, is_version_of, has_review)
+    Each output is a ';' joined DOI string (deduped).
+    """
+    if not isinstance(relation_obj, dict):
+        return ("", "", "", "")
+
+    preprint_of = []
+    has_preprint = []
+    version_of = []
+    has_review = []
+
+    for key, value in relation_obj.items():
+        k = str(key).strip().lower()
+
+        if k in PREPRINT_REL_KEYS:
+            if k == "is-preprint-of":
+                preprint_of += _extract_dois_from_relation_value(value)
+            elif k == "has-preprint":
+                has_preprint += _extract_dois_from_relation_value(value)
+
+        elif k in VERSION_REL_KEYS:
+            version_of += _extract_dois_from_relation_value(value)
+
+        elif k in REVIEW_REL_KEYS:
+            has_review += _extract_dois_from_relation_value(value)
+
+    # dedupe + join
+    return (
+        merge_dois(preprint_of),
+        merge_dois(has_preprint),
+        merge_dois(version_of),
+        merge_dois(has_review),
+    )
+
 # ============================================================
 #  BIG CANONICAL SCHEMA (exact columns you drafted)
 # ============================================================
@@ -683,6 +823,7 @@ BIG_CANON_COLS = [
     "container_title",
     "institution_name",
     "group_title",
+    "issn",
     "title",
     "original_title",
     "short_title",
@@ -738,9 +879,11 @@ BIG_CANON_COLS = [
     "published_version_ids_json",
     "is_version_of",
     "version_of_ids_json",
-    "update_to_json",
-    "update_policy",
     "version_label",
+    "has_review",
+    "update_to_json",
+    "parent_doi",
+    "update_policy",
     "rule_tokens",
     "rule_row_id",
     'raw_relationships_json',
@@ -787,7 +930,7 @@ def _strip_jats(abstract_raw: str | None) -> str | None:
     if not abstract_raw or not isinstance(abstract_raw, str):
         return None
     txt = unescape(abstract_raw)
-    txt = re.sub(r"<[^>]+>", " ", abstract_raw)
+    txt = re.sub(r"<[^>]+>", " ", txt)
     txt = re.sub(r"\s+", " ", txt).strip()
     return txt or None
 
@@ -1030,6 +1173,7 @@ def _build_big_canon_crossref(df: pd.DataFrame) -> pd.DataFrame:
     out["container_title"] = df.get("container_title")
     out["institution_name"] = df.get("institution_name")
     out["group_title"] = df.get("group_title")
+    out["issn"] = df.get("issn")
 
     out["title"] = df.get("title")
     out["original_title"] = df.get("original_title")
@@ -1101,17 +1245,61 @@ def _build_big_canon_crossref(df: pd.DataFrame) -> pd.DataFrame:
     out["relations_json"] = df.get("relation_json")
     out["has_preprint"] = df.get("has_preprint")
     out["is_preprint_of"] = df.get("is_preprint_of")
+    out["has_review"] = df.get("has_review")   # ✅ NEW
 
     # "has_published_version" is not directly provided; infer if is_preprint_of exists
     out["has_published_version"] = out["is_preprint_of"].apply(lambda x: True if isinstance(x, str) and x.strip() else False if x is not None else None)
     out["published_version_ids_json"] = None
 
     out["is_version_of"] = df.get("is_version_of")
-    out["version_of_ids_json"] = None
+    out["version_of_ids_json"] = df.get("version_of_ids_json")
+
+    out["version_label"] = df.get("version_label")
+    # ---------------------------------------
+    # Parent DOI extraction from update-to relationships
+    # ---------------------------------------
+    def _extract_update_to_children(update_to_json):
+        """Return list of child DOIs from update-to JSON."""
+        if update_to_json is None or (isinstance(update_to_json, float) and pd.isna(update_to_json)):
+            return []
+        try:
+            arr = json.loads(update_to_json) if isinstance(update_to_json, str) else update_to_json
+        except Exception:
+            return []
+        if not isinstance(arr, list):
+            return []
+        out = []
+        for u in arr:
+            if isinstance(u, dict):
+                d = u.get("DOI") or u.get("doi")
+                if d:
+                    out.append(str(d).strip().lower())
+        return out
+
+    # parent = the current DOI row
+    df2 = df.copy()
+    df2["doi_norm"] = df2["doi"].astype(str).str.strip().str.lower()
+
+    # Build edge list parent -> child
+    edges = []
+    for parent_doi, update_to_json in zip(df2["doi_norm"], df2.get("update_to_json", [None]*len(df2))):
+        for child_doi in _extract_update_to_children(update_to_json):
+            edges.append((child_doi, parent_doi))
+
+    # Invert: child -> parent (if multiple parents exist, keep first or join)
+    child_to_parent = {}
+    for child, parent in edges:
+        child_to_parent.setdefault(child, parent)  # keep first seen
+
+    # Now assign parent_doi to each DOI row (child rows will match)
+    df2["parent_doi"] = df2["doi_norm"].map(child_to_parent)
+
+    # then in your canonical 'out':
+    out["parent_doi"] = df2["parent_doi"]
+    #---------------------------------------
 
     out["update_to_json"] = df.get("update_to_json")
     out["update_policy"] = df.get("update_policy")
-    out["version_label"] = None
 
     out["rule_tokens"] = df.get("rule_tokens")
     out["rule_row_id"] = df.get("rule_row_id")
@@ -1128,6 +1316,9 @@ def _build_big_canon_crossref(df: pd.DataFrame) -> pd.DataFrame:
             out[c] = None
     return out[BIG_CANON_COLS].copy()
 
+# ------------------------------------------------------------
+# DataCite
+# ------------------------------------------------------------
 def _build_big_canon_datacite(df: pd.DataFrame) -> pd.DataFrame:
     if df is None or df.empty:
         return pd.DataFrame(columns=BIG_CANON_COLS)
@@ -1153,6 +1344,7 @@ def _build_big_canon_datacite(df: pd.DataFrame) -> pd.DataFrame:
     out["container_title"] = None
     out["institution_name"] = None
     out["group_title"] = None
+    out["issn"] = None
 
     out["title"] = df.get("title")
     out["original_title"] = None
@@ -1173,7 +1365,7 @@ def _build_big_canon_datacite(df: pd.DataFrame) -> pd.DataFrame:
     out["date_deposited"] = None
     out["date_indexed"] = None
     out["date_updated"] = df.get("updated")
-    out["date_registered"] = df.get("registered_date")
+    out["date_registered"] = df.get("registered")
     out["date_issued"] = None
     out["date_published_online"] = None
 
@@ -1235,7 +1427,8 @@ def _build_big_canon_datacite(df: pd.DataFrame) -> pd.DataFrame:
 
     out["update_to_json"] = None
     out["update_policy"] = None
-    out["version_label"] = df.get("version")
+    out["version_label"] = df.get("version_label")
+    out["parent_doi"] = None #df.get("parent_doi")
 
     out["rule_tokens"] = df.get("rule_tokens")
     out["rule_row_id"] = df.get("rule_row_id")
@@ -1274,6 +1467,7 @@ def _build_big_canon_openalex(df: pd.DataFrame) -> pd.DataFrame:
     out["container_title"] = None
     out["institution_name"] = None
     out["group_title"] = None
+    out["issn"] = df.get("issn")
 
     out["title"] = df.get("title")
     out["original_title"] = None
@@ -1775,23 +1969,28 @@ def _fetch_work_by_doi(doi, max_retries=6, base_sleep=0.5):
         raise last_exc
 
 
-def _extract_relations(rel):
-    """Extract is-preprint-of / has-preprint / is-version-of lists from Crossref."""
-    if not rel or not isinstance(rel, dict):
-        return (None, None, None)
+# def _extract_relations(rel):
+#     """Extract is-preprint-of / has-preprint / is-version-of / has-review lists from Crossref."""
+#     if not rel or not isinstance(rel, dict):
+#         return (None, None, None, None)
 
-    def pick(kind):
-        items = rel.get(kind) or []
-        dois = []
-        for it in items:
-            doi = it.get("id")
-            if doi and doi.lower().startswith("https://doi.org/"):
-                doi = doi.split("org/", 1)[1]
-            if doi:
-                dois.append(doi)
-        return "; ".join(sorted(set(dois))) if dois else None
+#     def pick(kind):
+#         items = rel.get(kind) or []
+#         dois = []
+#         for it in items:
+#             doi = it.get("id")
+#             if doi and isinstance(doi, str) and doi.lower().startswith("https://doi.org/"):
+#                 doi = doi.split("org/", 1)[1]
+#             if doi:
+#                 dois.append(str(doi).strip())
+#         return "; ".join(sorted(set(dois))) if dois else None
 
-    return (pick("is-preprint-of"), pick("has-preprint"), pick("is-version-of"))
+#     return (
+#         pick("is-preprint-of"),
+#         pick("has-preprint"),
+#         pick("is-version-of"),
+#         pick("has-review"),   # ✅ NEW
+#     )
 
 
 def _one_row_wide(m):
@@ -1814,8 +2013,18 @@ def _one_row_wide(m):
     accepted_date         = _date_from_parts(m.get("accepted"))
     approved_date         = _date_from_parts(m.get("approved"))
 
-    is_preprint_of, has_preprint, is_version_of = _extract_relations(m.get("relation"))
+    is_preprint_of, has_preprint, is_version_of, has_review = _extract_relations_crossref(m.get("relation"))
     relation_json          = _json(m.get("relation"))
+
+    # # then ALWAYS merge into final column (not overwrite)
+    # existing_is_version_of = df.get("is_version_of")  # could be None or a string
+
+    # # ut["is_preprint_of"] = merge_dois(df.get("is_preprint_of"), is_preprint_of)
+    # # ut["has_preprint"]   = merge_dois(df.get("has_preprint"), has_preprint)
+    # # ut["has_review"]     = merge_dois(df.get("has_review"), has_review)
+
+    # # IMPORTANT: include your old behavior + relation-derived versions (incl updated-*)
+    # ut["is_version_of"]  = merge_dois(existing_is_version_of, is_version_of_rel)
 
     authors_pretty = None
     if m.get("author"):
@@ -1840,6 +2049,7 @@ def _one_row_wide(m):
     primary_url            = (m.get("resource", {}) or {}).get("primary", {}).get("URL")
 
     issn_json              = _json(m.get("ISSN"))
+    issn = "; ".join(m.get("ISSN") or []) if m.get("ISSN") else None
     issn_type_json         = _json(m.get("issn-type"))
     isbn_type_json         = _json(m.get("isbn-type"))
     alternative_id_json    = _json(m.get("alternative-id"))
@@ -1852,6 +2062,17 @@ def _one_row_wide(m):
     reference_count        = m.get("reference-count")
     is_referenced_by_count = m.get("is-referenced-by-count")
     references_json        = _json(m.get("reference"))  # to delect
+
+    update_to = m.get("update-to") or []
+    labels = []
+    if isinstance(update_to, list):
+        for u in update_to:
+            if isinstance(u, dict):
+                lab = u.get("label")
+                if lab:
+                    labels.append(str(lab).strip())
+
+    version_label = "; ".join(sorted(set(labels))) if labels else None
 
     update_to_json         = _json(m.get("update-to"))  # to delect
     update_policy          = m.get("update-policy") # to delect
@@ -1915,6 +2136,7 @@ def _one_row_wide(m):
         "subjects_json": subjects_json,
         "language": language,
         "issn_json": issn_json,
+        "issn": issn,
         "issn_type_json": issn_type_json,
         "isbn_type_json": isbn_type_json,
         "alternative_id_json": alternative_id_json,
@@ -1925,10 +2147,12 @@ def _one_row_wide(m):
         "is_preprint_of": is_preprint_of,
         "has_preprint": has_preprint,
         "is_version_of": is_version_of,
+        "has_review": has_review,
         "relation_json": relation_json,
         "update_type": update_type,
         "update_policy": update_policy,
         "update_to_json": update_to_json,
+        "version_label": version_label,
         "archive_json": archive_json,
         "content_domain_json": content_domain_json,
         "assertion_json": assertion_json,
@@ -2304,6 +2528,27 @@ def _datacite_request(params, mailto, max_retries=6, base_sleep=0.5):
     if last_exc:
         raise last_exc
 
+def _datacite_parent_doi(related_identifiers):
+    """
+    Return parent DOI for a child version (DataCite relatedIdentifiers).
+    Prioritize child -> parent relations.
+    """
+    if not isinstance(related_identifiers, list):
+        return None
+
+    preferred = {"IsNewVersionOf", "IsVersionOf", "IsDerivedFrom", "IsPreviousVersionOf"}
+
+    for rel_type in preferred:
+        for r in related_identifiers:
+            if not isinstance(r, dict):
+                continue
+            if r.get("relationType") != rel_type:
+                continue
+            if str(r.get("relatedIdentifierType") or "").upper() == "DOI":
+                rid = r.get("relatedIdentifier")
+                if rid:
+                    return _norm_doi(str(rid))
+    return None
 
 def _datacite_one_row(item):
     """Flatten one DataCite /dois item into a wide row."""
@@ -2352,12 +2597,17 @@ def _datacite_one_row(item):
     descriptions_json   = _json(a.get("descriptions"))
     identifiers_json    = _json(a.get("identifiers"))
     alt_ids_json        = _json(a.get("alternateIdentifiers"))
-    related_ids_json    = _json(a.get("relatedIdentifiers"))
+    related_ids_raw = a.get("relatedIdentifiers") or []
+    related_ids_json = _json(related_ids_raw)
+    # NEW: parent DOI from DataCite relatedIdentifiers
+    parent_doi = _datacite_parent_doi(related_ids_raw)
+
     container_json      = _json(a.get("container"))
     funding_refs_json   = _json(a.get("fundingReferences"))
     rights              = a.get("rights")  # deprecated single string
     rights_list_json    = _json(a.get("rightsList"))
     # rightsIdentifiers = a.get("rightsIdentifiers")
+    
     sizes_json          = _json(a.get("sizes"))
     formats_json        = _json(a.get("formats"))
     geo_locations_json  = _json(a.get("geoLocations"))
@@ -2384,7 +2634,7 @@ def _datacite_one_row(item):
         "identifiers_json": identifiers_json, "alternate_ids_json": alt_ids_json,
         "related_ids_json": related_ids_json, "container_json": container_json,
         "funding_refs_json": funding_refs_json, 
-        "rights": rights,
+        "rights": rights,"parent_doi": parent_doi,
         "rights_list_json": rights_list_json,
         "sizes_json": sizes_json, "formats_json": formats_json,
         "geo_locations_json": geo_locations_json, "references_json": references_json,
@@ -2551,6 +2801,7 @@ def _openalex_one_row(work: dict) -> dict:
         "primary_location_landing_page_url": primary.get("landing_page_url"),
         "primary_location_source_id": source.get("id"),
         "primary_location_source_display_name": source.get("display_name"),
+        "issn": source.get("issn_l"),
         "primary_location_is_oa": oa.get("is_oa"),
         "primary_location_oa_status": oa.get("oa_status"),
         "authorships_json": _json(work.get("authorships")),
@@ -2560,6 +2811,7 @@ def _openalex_one_row(work: dict) -> dict:
         "license": primary.get("license"),
         "license_id": primary.get("license_id"),
         "created_date": work.get("created_date"),
+        "version_label": primary.get("version"),
         "updated_date": work.get("updated_date"),
         "primary_location_fulltext_pdf_url": primary.get("pdf_url"),
         "referenced_works_count": work.get("referenced_works_count"),
