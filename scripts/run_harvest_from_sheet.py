@@ -51,14 +51,15 @@ servers_to_test = [
     "CERN document server",
     "CrossAsia-Repository (Universität Heidelberg)",
     "Organic Eprints",
+    # "arXiv",
 ]
 
 DO_DRY_RUN = False
 
 summary = harvest_servers_from_rules_sheet(
     sheet_csv_path_or_url=SHEET_CSV,
-    servers=servers_to_test,
-    date_start="2019-10-01",
+    servers=servers_to_test, # specify None to do all servers in the sheet # servers_to_test
+    date_start="2024-10-01",
     date_end=date.today().isoformat(),
     mailto=MAILTO,
     output_root="data/by_server",
