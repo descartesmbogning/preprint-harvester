@@ -3,3 +3,6 @@ requests
 tqdm
 pyarrow
 python-dotenv
+duckdb
+ipykernel
+jupyterlab
