@@ -52,15 +52,17 @@ servers_to_test = [
     "CrossAsia-Repository (Universität Heidelberg)",
     "Organic Eprints",
     # "arXiv",
+    'HAL', # 1990-2009 errors on harvest / 2012
+    'RePEc: Research Papers in Economics',
 ]
 
 DO_DRY_RUN = False
 
 summary = harvest_servers_from_rules_sheet(
     sheet_csv_path_or_url=SHEET_CSV,
-    servers=servers_to_test, # specify None to do all servers in the sheet # servers_to_test
-    date_start="2024-10-01",
-    date_end=date.today().isoformat(),
+    servers=None, # specify None to do all servers in the sheet # servers_to_test
+    date_start="1990-01-01", # "1990-01-01"
+    date_end="2022-03-02", #date.today().isoformat(),  "2025-12-31"
     mailto=MAILTO,
     output_root="data/by_server",
     dry_run=DO_DRY_RUN,

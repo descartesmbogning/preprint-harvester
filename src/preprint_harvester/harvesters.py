@@ -522,7 +522,61 @@ def _datacite_extract_abstract(descriptions_json_str: str | None) -> str | None:
         out = re.sub(r"\s+", " ", out).strip()
     return out or None
 
+# Rule type normalization and filter building -----------------------
+def _normalize_rule_types(rule_types):
+    """
+    Accepts:
+      - None / "" / NaN
+      - "preprint"
+      - "preprint,text"
+      - ["preprint", "text"]
+    Returns list[str] lowercased.
+    """
+    if rule_types is None:
+        return []
+    if isinstance(rule_types, float):  # pandas NaN often comes as float
+        return []
+    if isinstance(rule_types, (list, tuple, set)):
+        return [str(x).strip().lower() for x in rule_types if str(x).strip()]
+    s = str(rule_types).strip()
+    if not s:
+        return []
+    return [x.strip().lower() for x in s.replace(";", ",").split(",") if x.strip()]
 
+
+def _build_datacite_type_filters(rule_types):
+    """
+    Returns:
+      (resource_type_id_param: str|None, type_query: str|None, want_all: bool)
+
+    Strategy:
+      - "all" => no resource-type-id filter, no type_query
+      - include non-preprint types via resource-type-id (filters resourceTypeGeneral) :contentReference[oaicite:2]{index=2}
+      - include preprint via query on types.resourceType:"preprint" :contentReference[oaicite:3]{index=3}
+    """
+    types_list = _normalize_rule_types(rule_types)
+
+    if not types_list:
+        # default behaviour if rule doesn't specify: preprint only
+        types_list = ["preprint"]
+
+    want_all = any(t == "all" for t in types_list)
+    if want_all:
+        return None, None, True
+
+    wants_preprint = "preprint" in types_list
+    other_types = [t for t in types_list if t != "preprint"]
+
+    # resource-type-id filters resourceTypeGeneral (DataCite docs) :contentReference[oaicite:4]{index=4}
+    rtid = _datacite_join_resource_type_ids(other_types) if other_types else None
+
+    # query uses OpenSearch query syntax; nested fields are like attributes.types.resourceType
+    # and in query you reference it as: types.resourceType:"preprint" :contentReference[oaicite:5]{index=5}
+    type_query = 'types.resourceType:"preprint"' if wants_preprint else None
+
+    return rtid, type_query, False
+
+# JSON loading and extraction helpers -----------------------
 def _safe_lower(x):
     return str(x).strip().lower() if x is not None else ""
 
@@ -798,6 +852,71 @@ def _extract_relations_crossref(relation_obj: dict | None):
         merge_dois(preprint_of),
         merge_dois(has_preprint),
         merge_dois(version_of),
+        merge_dois(has_review),
+    )
+
+def _extract_relations_datacite(related_ids: list | None):
+    """
+    DataCite equivalent of _extract_relations_crossref
+    Input:
+      relatedIdentifiers (attributes.relatedIdentifiers)
+    Returns:
+      (
+        is_preprint_of,   # DOI(s)
+        has_preprint,     # DOI(s)
+        is_version_of,    # DOI(s)
+        has_review        # DOI(s)
+      )
+    """
+    if not isinstance(related_ids, list):
+        return ("", "", "", "")
+
+    is_preprint_of = []
+    has_preprint   = []
+    is_version_of  = []
+    has_review     = []
+
+    for r in related_ids:
+        if not isinstance(r, dict):
+            continue
+
+        rel_type = (r.get("relationType") or "").strip()
+        id_type  = (r.get("relatedIdentifierType") or "").upper()
+        rid      = r.get("relatedIdentifier")
+
+        if id_type != "DOI" or not rid:
+            continue
+
+        doi = normalize_doi(rid)
+        if not doi:
+            continue
+
+        # --- Preprint relations ---
+        if rel_type  in {
+            "IsVersionOf",
+            "IsPreprintOf",
+        }:
+            is_preprint_of.append(doi)
+
+        elif rel_type == "HasPreprint":
+            has_preprint.append(doi)
+
+        # --- Version relations ---
+        elif rel_type in {
+            "IsNewVersionOf",
+            "IsPreviousVersionOf",
+            "IsDerivedFrom",
+        }:
+            is_version_of.append(doi)
+
+        # --- Review relations (rare but exists) ---
+        elif rel_type in {"Reviews", "IsReviewedBy"}:
+            has_review.append(doi)
+
+    return (
+        merge_dois(is_preprint_of),
+        merge_dois(has_preprint),
+        merge_dois(is_version_of),
         merge_dois(has_review),
     )
 
@@ -1416,18 +1535,19 @@ def _build_big_canon_datacite(df: pd.DataFrame) -> pd.DataFrame:
 
     # relations: DataCite relatedIdentifiers exist, but not parsed into has_preprint/is_preprint_of yet
     out["relations_json"] = df.get("related_ids_json")
-    out["has_preprint"] = None
-    out["is_preprint_of"] = None
+    out["has_preprint"] = df.get("has_preprint")
+    out["is_preprint_of"] = df.get("is_preprint_of")
 
-    out["has_published_version"] = None
+    out["has_published_version"] = out["is_preprint_of"].apply(lambda x: True if isinstance(x, str) and x.strip() else False if x is not None else None)
     out["published_version_ids_json"] = None
 
-    out["is_version_of"] = None
+    out["is_version_of"] = df.get("is_version_of")
+    out["has_review"]     = df.get("has_review")
     out["version_of_ids_json"] = None
 
     out["update_to_json"] = None
     out["update_policy"] = None
-    out["version_label"] = df.get("version_label")
+    out["version_label"] = df.get("version")
     out["parent_doi"] = None #df.get("parent_doi")
 
     out["rule_tokens"] = df.get("rule_tokens")
@@ -2598,6 +2718,12 @@ def _datacite_one_row(item):
     identifiers_json    = _json(a.get("identifiers"))
     alt_ids_json        = _json(a.get("alternateIdentifiers"))
     related_ids_raw = a.get("relatedIdentifiers") or []
+    (
+        is_preprint_of,
+        has_preprint,
+        is_version_of,
+        has_review,
+    ) = _extract_relations_datacite(related_ids_raw)
     related_ids_json = _json(related_ids_raw)
     # NEW: parent DOI from DataCite relatedIdentifiers
     parent_doi = _datacite_parent_doi(related_ids_raw)
@@ -2642,6 +2768,11 @@ def _datacite_one_row(item):
         "reference_count": referenceCount, "citation_count": citationCount,
         "raw_json": raw_attributes_json,
         "raw_relationships_json": raw_relationships_json,
+        "is_preprint_of": is_preprint_of,
+        "has_preprint": has_preprint,
+        "is_version_of": is_version_of,
+        "has_review": has_review,
+
     }
 
 
@@ -2654,6 +2785,7 @@ def harvest_datacite_for_client_ids(
     rows_per_call: int = 1000,
     types_query_override: str | None = None,
     doi_prefix_query: str | None = None,
+    client_id_to_rule_types: dict[str, str | list[str]] | None = None,
 ):
     """
     Thin wrapper around the DataCite API for per-server harvesting.
@@ -2692,10 +2824,12 @@ def harvest_datacite_for_client_ids(
     for cid in client_ids:
         print(f"\n  [DataCite] client_id={cid}")
 
-        # If "all" is present, do NOT send resource-type-id (means: all types)
-        want_all = any(str(x).strip().lower() == "all" for x in (resource_types or []))
+        rule_types = _normalize_rule_types(resource_types)  # e.g. ["text","dataset"]
+        want_all = any(t == "all" for t in rule_types)
 
-        rtid = None if want_all else _datacite_join_resource_type_ids(resource_types)
+        # If rule_types is empty, you can decide a default; keeping your current default:
+        if not rule_types:
+            rule_types = ["preprint"]
 
         base_params = {
             "client-id": cid,
@@ -2703,69 +2837,82 @@ def harvest_datacite_for_client_ids(
             "affiliation": "true",
         }
 
-        if rtid:
-            # DataCite accepts comma-separated list
-            base_params["resource-type-id"] = rtid
-
-        # Build query: start from date_query, then AND doi_prefix_query (if any)
-        combined_query = date_query  # can be None
-
+        # Your date_query and doi_prefix_query logic (keep what you already have)
+        combined_date_prefix = date_query
         if doi_prefix_query:
-            combined_query = f"({combined_query}) AND ({doi_prefix_query})" if combined_query else f"({doi_prefix_query})"
+            combined_date_prefix = (
+                f"({combined_date_prefix}) AND ({doi_prefix_query})"
+                if combined_date_prefix else f"({doi_prefix_query})"
+            )
 
-        if combined_query:
-            base_params["query"] = combined_query
+        slices = []
 
+        # ---- Slice A: resource-type-id from rule types ----
+        if not want_all:
+            rtid = _datacite_join_resource_type_ids(rule_types)  # includes preprint,text,dataset if present
+            pA = dict(base_params)
+            pA["resource-type-id"] = rtid
+            if combined_date_prefix:
+                pA["query"] = combined_date_prefix
+            slices.append(("rtid_slice", pA))
+        else:
+            # "all" means no rtid filter
+            pA = dict(base_params)
+            if combined_date_prefix:
+                pA["query"] = combined_date_prefix
+            slices.append(("all_slice", pA))
 
-        print("[DataCite combined_query]", base_params.get("query"))
+        # ---- Slice B: ALWAYS add preprint via types.resourceType query ----
+        pB = dict(base_params)
+        preprint_q = 'types.resourceType:"preprint"'
+        if combined_date_prefix:
+            pB["query"] = f"({combined_date_prefix}) AND ({preprint_q})"
+        else:
+            pB["query"] = preprint_q
+        slices.append(("preprint_resourceType_slice", pB))
 
-        # ---- total count (exact) ----
-        total_params = dict(base_params)
-        total_params["page[size]"] = 0
-        total_params["page[cursor]"] = "1"
+        for slice_name, slice_params in slices:
+            print(f"[DataCite slice] {slice_name}", {
+                "client-id": slice_params.get("client-id"),
+                "resource-type-id": slice_params.get("resource-type-id"),
+                "query": slice_params.get("query"),
+            })
 
-        debug_total = {k: total_params.get(k) for k in ("client-id", "resource-type-id", "query") if k in total_params}
-        print("[DataCite total_params]", debug_total)
+            # ---- total count ----
+            total_params = dict(slice_params)
+            total_params["page[size]"] = 0
+            total_params["page[cursor]"] = "1"
+            js_total = _datacite_request(total_params, mailto=mailto)
+            total = int((js_total.get("meta") or {}).get("total") or 0)
+            print(f"    slice total={total}")
 
-        js_total = _datacite_request(total_params, mailto=mailto)
-        meta = js_total.get("meta") or {}
-        total = int(meta.get("total") or 0)
-        print(f"    combined slice → total={total}")
+            pbar = None
+            if _HAVE_TQDM and total > 0:
+                pbar = tqdm(total=total, desc="Fetching records (DataCite)", unit="rec")
 
-        pbar = None
-        if _HAVE_TQDM and total > 0:
-            pbar = tqdm(total=total, desc="Fetching records (DataCite)", unit="rec")
+            cursor = "1"
+            while cursor:
+                params = dict(slice_params)
+                params["page[size]"] = rows_per_call
+                params["page[cursor]"] = cursor
 
-        cursor = "1"
-        first_page_logged = False
-        while cursor:
-            params = dict(base_params)
-            params["page[size]"] = rows_per_call
-            params["page[cursor]"] = cursor
+                js = _datacite_request(params, mailto=mailto)
+                items = js.get("data") or []
+                if not items:
+                    break
 
-            if not first_page_logged:
-                debug_params = {k: params.get(k) for k in ("client-id", "resource-type-id", "query") if k in params}
-                print("[DataCite page_params]", debug_params)
-                first_page_logged = True
+                for it in items:
+                    if pbar:
+                        pbar.update(1)
+                    row = _datacite_one_row(it)
+                    if row:
+                        all_rows.append(row)
 
-            js = _datacite_request(params, mailto=mailto)
-            items = js.get("data") or []
-            if not items:
-                break
-
-            for it in items:
-                if pbar:
-                    pbar.update(1)
-                row = _datacite_one_row(it)
-                if row:
-                    all_rows.append(row)
-
-            links = js.get("links") or {}
-            nxt = links.get("next")
-            cursor = _parse_next_cursor(nxt) if nxt else None
-
-        if pbar:
-            pbar.close()
+                nxt = (js.get("links") or {}).get("next")
+                cursor = _parse_next_cursor(nxt) if nxt else None
+                
+            if pbar:
+                pbar.close()
 
 
     df = pd.DataFrame(all_rows)
