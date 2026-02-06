@@ -108,3 +108,7 @@ vscode_scripts.txt
 *.csv.gz
 *.parquet
 *.pkl
+
+
+*Copy*.ipynb
+02_versioning_patterns.ipynb
