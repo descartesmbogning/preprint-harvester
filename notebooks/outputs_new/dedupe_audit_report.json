@@ -1,0 +1,16 @@
+{
+  "n_rows_total": 8084860,
+  "n_rows_clustered": 1148031,
+  "n_parents": 7447516,
+  "n_duplicates": 637344,
+  "n_unlabeled": 0,
+  "n_clusters": 510687,
+  "cluster_size_min": 1,
+  "cluster_size_median": 2.0,
+  "cluster_size_p95": 3.0,
+  "cluster_size_max": 702,
+  "clusters_cross_server": 196259,
+  "clusters_single_server": 314428,
+  "dups_missing_parent_id": 0,
+  "parents_with_parent_id_filled": 0
+}

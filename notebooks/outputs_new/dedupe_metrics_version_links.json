@@ -1,0 +1,15 @@
+{
+  "n_rows_df": 8084860,
+  "n_rows_with_any_version_signal": 6460876,
+  "n_rows_considered_in_graph": 6460876,
+  "n_edges_unions_attempted": 178731,
+  "n_unions_done": 83495,
+  "n_components_total": 6377381,
+  "n_components_size_ge_2": 58022,
+  "n_rows_in_components_size_ge_2": 141517,
+  "n_rows_eligible_to_update": 8084860,
+  "n_rows_updated": 141517,
+  "n_parents_set": 58022,
+  "n_children_set": 83495,
+  "runtime_s": 14.53807227499783
+}

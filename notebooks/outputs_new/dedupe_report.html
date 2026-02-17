@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Dedupe Audit Report</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; }
+code { background: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #ddd; padding: 8px; vertical-align: top; }
+th { background: #f7f7f7; }
+.small { color: #555; font-size: 12px; }
+</style>
+</head>
+<body>
+<h2>Dedupe Audit Report</h2>
+
+<h3>Summary</h3>
+<ul>
+  <li>Total rows: <b>8084860</b></li>
+  <li>Clustered rows: <b>1148031</b></li>
+  <li>Clusters: <b>510687</b></li>
+  <li>Parents: <b>7447516</b> | Duplicates: <b>637344</b> | Unlabeled: <b>0</b></li>
+  <li>Cluster size (min/median/p95/max): <b>1</b> / <b>2.0</b> / <b>3.0</b> / <b>702</b></li>
+  <li>Cross-server clusters: <b>196259</b> | Single-server clusters: <b>314428</b></li>
+  <li>Duplicates missing parent_id: <b>0</b></li>
+</ul>
+
+<p class="small">
+Files saved in <code>outputs_new</code>:
+<br/>- dedupe_clusters_long.csv
+<br/>- dedupe_clusters_summary.csv
+<br/>- dedupe_audit_report.json
+<br/>- packets/...
+</p>
+
+<h3>Top 50 largest clusters (preview)</h3>
+<table>
+  <thead><tr><th>dup_group_id</th><th>n_records</th><th>servers</th><th>example_title</th></tr></thead>
+  <tbody>
+    <tr><td>datacite::10.5281/zenodo.14289192</td><td>702</td><td>Zenodo</td><td>Documento Desclasificado</td></tr><tr><td>datacite::10.5281/zenodo.15609432</td><td>569</td><td>Zenodo</td><td>Helix-Light-Vortex-Theory (H.L.V.)</td></tr><tr><td>datacite::10.22004/ag.econ.138684</td><td>450</td><td>AgEcon Search</td><td>Agricultural Letter</td></tr><tr><td>datacite::10.22004/ag.econ.136112</td><td>390</td><td>AgEcon Search</td><td>Agricultural Letter</td></tr><tr><td>datacite::10.22004/ag.econ.286599</td><td>301</td><td>AgEcon Search</td><td>Agricultural Letter</td></tr><tr><td>datacite::10.5281/zenodo.15832876</td><td>286</td><td>Zenodo</td><td>Additional Spacetime Distortion(ASD)</td></tr><tr><td>datacite::10.5281/zenodo.15161515</td><td>261</td><td>Zenodo</td><td>retracted</td></tr><tr><td>crossref::10.31219/osf.io/ed2a9</td><td>210</td><td>Open Science Framework</td><td>Experiment ended</td></tr><tr><td>crossref::10.32388/174914</td><td>184</td><td>Qeios</td><td>WITHDRAWN</td></tr><tr><td>datacite::10.5281/zenodo.6784019</td><td>182</td><td>Zenodo</td><td>Goldbach's Conjecture — Towards the Inconsistency of Arithmetic</td></tr><tr><td>datacite::10.5281/zenodo.14599183</td><td>177</td><td>Zenodo</td><td>"Discrete Viscous Time and Critical Information Mass: A New Paradigm for Cosmology, Quantum Mechanics, and Human Consciousness"</td></tr><tr><td>datacite::10.5281/zenodo.15631517</td><td>167</td><td>Zenodo</td><td>Additional Spacetime Distortion(ASD) created by Physical Matters</td></tr><tr><td>crossref::10.2139/ssrn.2721313</td><td>164</td><td>Humanities Commons CORE;Law Archive;MetaArXiv;Open Science Framework;PsyArXiv;SSRN;SocArXiv;Zenodo</td><td>An Intimate Insight on Psychopathy and a Novel Hermeneutic Psychological Science</td></tr><tr><td>datacite::10.5281/zenodo.15408957</td><td>162</td><td>Zenodo</td><td>A Geometrical Theory of Everything, Through Expansion, Compaction and Torsion (ECT) with Inverse-Square Laws Emerging from Geometric Principles</td></tr><tr><td>datacite::10.5281/zenodo.15690627</td><td>159</td><td>Zenodo</td><td>A Spectral--Geometric Proof of the Riemann Hypothesis via Dirac Spectra on G₂ Manifolds</td></tr><tr><td>crossref::10.31237/osf.io/7j3am</td><td>150</td><td>Thesis Commons;Zenodo</td><td>The Brain, Gravity, and the Universe</td></tr><tr><td>crossref::10.21055/preprints-3112015</td><td>145</td><td>Covid-19 Preprints</td><td>Анализ динамики эпидемического процесса COVID-19 в мире за неделю с 27.11.2021 г. по 03.12.2021 г.</td></tr><tr><td>crossref::10.21055/preprints-3112061</td><td>136</td><td>Covid-19 Preprints</td><td>Распространение вариантов вируса SARS-COV-2, вызывающих озабоченность (VOC) и интерес (VOI) на основе количества их геномов, депонированных в базу данных GISAID за неделю с 05.03.2022 г. по 11.03.2022 г.</td></tr><tr><td>datacite::10.5281/zenodo.1297654</td><td>135</td><td>Zenodo</td><td>P Versus Np</td></tr><tr><td>datacite::10.5281/zenodo.17172763</td><td>128</td><td>Zenodo</td><td>A Spectral-Geometric Proof of the Riemann Hypothesis</td></tr><tr><td>crossref::10.31237/osf.io/f2zda</td><td>128</td><td>Thesis Commons</td><td>Obat Aborsi Batam ( Asli ) 082314597755 Klinik Jual Obat Penggugur Kandungan Di Batam</td></tr><tr><td>datacite::10.5281/zenodo.16684574</td><td>119</td><td>Zenodo</td><td>Introduction of a new propulsion system for space navigation</td></tr><tr><td>datacite::10.22004/ag.econ.286899</td><td>118</td><td>AgEcon Search</td><td>Agricultural Letter</td></tr><tr><td>datacite::10.5281/zenodo.17373284</td><td>115</td><td>Zenodo</td><td>Flip Space : Substrate Theory</td></tr><tr><td>crossref::10.31219/osf.io/uvpzc</td><td>115</td><td>Open Science Framework</td><td>Experiment ended</td></tr><tr><td>datacite::10.22004/ag.econ.267605</td><td>108</td><td>AgEcon Search</td><td>Front Matter</td></tr><tr><td>crossref::10.31219/osf.io/db2e6</td><td>107</td><td>Open Science Framework</td><td>Experiment ended</td></tr><tr><td>crossref::10.31219/osf.io/9vysc</td><td>107</td><td>Open Science Framework</td><td>Experiment ended</td></tr><tr><td>datacite::10.13140/rg.2.2.29925.91360/1</td><td>107</td><td>ResearchGate</td><td>108- The quantized atomic masses NMT-QAM-2018 version 4 of Hassium Isotopes</td></tr><tr><td>datacite::10.22004/ag.econ.349464</td><td>106</td><td>AgEcon Search</td><td>Bibliographie</td></tr><tr><td>datacite::10.22004/ag.econ.261831</td><td>102</td><td>AgEcon Search</td><td>Back Matter</td></tr><tr><td>crossref::10.31237/osf.io/yex9a</td><td>100</td><td>Thesis Commons</td><td>Pusatnya Obat Aborsi Cytotec Asli 085713148808 Madiun Jual Obat Penggugur Kandungan Janin Asli Telat Bulan Di Madiun</td></tr><tr><td>crossref::10.20944/preprints202207.0399.v1</td><td>99</td><td>Preprints.org</td><td>New Concepts of Time and Matter Supported by Fifteen Proofs</td></tr><tr><td>crossref::10.20944/preprints202302.0051.v1</td><td>98</td><td>Preprints.org</td><td>Duality Principles and Numerical Procedures for a Large Class of Non-convex Models in the Calculus of Variations</td></tr><tr><td>datacite::10.22004/ag.econ.138059</td><td>98</td><td>AgEcon Search</td><td>Agricultural Letter</td></tr><tr><td>crossref::10.31219/osf.io/nw79r</td><td>97</td><td>Open Science Framework</td><td>Experiment ended</td></tr><tr><td>datacite::10.5281/zenodo.15164567</td><td>96</td><td>Zenodo</td><td>Quantum Time-Energy Theory (QTET) &amp; UTRER: Provenance Record (IBM and Colab)</td></tr><tr><td>datacite::10.5281/zenodo.5805044</td><td>94</td><td>Zenodo</td><td>Bremsstrahlung</td></tr><tr><td>datacite::10.22004/ag.econ.286010</td><td>89</td><td>AgEcon Search</td><td>Agricultural Letter</td></tr><tr><td>datacite::10.5281/zenodo.15379806</td><td>88</td><td>Zenodo</td><td>증명 업적</td></tr><tr><td>datacite::10.5281/zenodo.15665258</td><td>86</td><td>Zenodo</td><td>On the dynamics of Entropy and Geometry</td></tr><tr><td>datacite::10.22004/ag.econ.136285</td><td>86</td><td>AgEcon Search</td><td>Agricultural Letter</td></tr><tr><td>datacite::10.5281/zenodo.14873392</td><td>84</td><td>Zenodo</td><td>El Universo Dinámico</td></tr><tr><td>datacite::10.5281/zenodo.3648511</td><td>81</td><td>HAL;Zenodo</td><td>The Riemann Hypothesis</td></tr><tr><td>datacite::10.22004/ag.econ.369387</td><td>80</td><td>AgEcon Search</td><td>No title</td></tr><tr><td>datacite::10.5281/zenodo.16145049</td><td>78</td><td>Zenodo</td><td>Regular Black Holes (RBHs): A Non-Singular Alternative to Classical Black Holes with Structural Validation and Thermodynamic Considerations via Gravitational Thermodynamics Approach</td></tr><tr><td>datacite::10.5281/zenodo.16908220</td><td>77</td><td>Zenodo</td><td>Black Hole Emission Hypothesis: A Proposed Origin for Dark Matter</td></tr><tr><td>datacite::10.48550/arxiv.2506.00106</td><td>76</td><td>Zenodo;arXiv</td><td>Notes on a Gaussian-Based Distribution Algebra for the Non-linear Wave Equation of the Shift Vector in Quantum Foam</td></tr><tr><td>datacite::10.5281/zenodo.16899882</td><td>76</td><td>Zenodo</td><td>The Photon Matrix Model: A Deterministic Collapse Geometry Providing a Finite, ZFC Formalizable Foundation for Mathematics, Physics, and Computation</td></tr><tr><td>datacite::10.5281/zenodo.15549944</td><td>75</td><td>Zenodo</td><td>Withdrawn by Author – Not for Distribution</td></tr>
+  </tbody>
+</table>
+
+</body>
+</html>

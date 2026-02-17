@@ -1,0 +1,15 @@
+{
+  "n_rows": 8084860,
+  "n_dupe_edges": 645537,
+  "n_involved_records": 1153384,
+  "n_components": 507847,
+  "n_components_size_ge2": 500005,
+  "n_rows_updated_group_id": 885672,
+  "n_rows_updated_parent_id": 18182,
+  "n_rows_updated_hierarchy": 283826,
+  "n_parents_set": 507847,
+  "n_duplicates_set": 637344,
+  "choose_parent": "oldest",
+  "date_col_used": "date_first_seen",
+  "overwrite_mode": "any"
+}

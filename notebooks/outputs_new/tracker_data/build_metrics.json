@@ -1,0 +1,14 @@
+[
+  {
+    "rows_in_input":8084860,
+    "rows_used":1148031,
+    "n_servers":108,
+    "n_clusters":510687,
+    "clusters_with_versions":500005,
+    "clusters_with_published":169360,
+    "cross_server_clusters":196259,
+    "year_min":1967,
+    "year_max":2025,
+    "out_dir":"outputs_new\/tracker_data"
+  }
+]

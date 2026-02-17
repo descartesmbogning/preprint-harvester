@@ -1,0 +1,9 @@
+{
+  "total_rows": 8084860,
+  "clustered_rows_has_dup_group_id": 1148031,
+  "singleton_rows_no_dup_group_id": 6936829,
+  "clusters_distinct_dup_group_id": 510687,
+  "groups_full_clusters_plus_singletons": 7447516,
+  "long_full_rows_written": 8084860,
+  "parent_index_rows_written": 7447516
+}
