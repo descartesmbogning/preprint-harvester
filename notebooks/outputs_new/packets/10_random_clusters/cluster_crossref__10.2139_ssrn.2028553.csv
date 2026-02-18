@@ -1,0 +1,3 @@
+dup_group_id,record_id,parent_record_id,records_hierarchy,server_name,date_first_seen,title,title_clean_v2,authors_flat,cluster_size
+crossref::10.2139/ssrn.2028553,crossref::10.2139/ssrn.2028553,,parent,SSRN,2012-01-01,Supplement to 'Belief Heterogeneity in the Arrow-Borch-Raviv Insurance Model',supplement to belief heterogeneity in the arrow borch raviv insurance model,"Ghossoub, Mario",2
+crossref::10.2139/ssrn.2028553,openalex::W3144494831,crossref::10.2139/ssrn.2028553,parent - duplicate (Munich Personal RePEc Archive),Munich Personal RePEc Archive,2012-03-22,"Supplement to ""Belief heterogeneity in the Arrow-Borch-Raviv insurance model""",supplement to belief heterogeneity in the arrow borch raviv insurance model,Mario Ghossoub,2

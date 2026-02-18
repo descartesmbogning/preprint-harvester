@@ -1,0 +1,3 @@
+dup_group_id,record_id,parent_record_id,records_hierarchy,server_name,date_first_seen,title,title_clean_v2,authors_flat,cluster_size
+relaxed::A1_tokenbag_exact::37838,datacite::10.5281/zenodo.15708015,,parent,Zenodo,2025-06-20,Detailed Proof of the Twin Prime Conjecture,detailed proof of the twin prime conjecture,"KEMAYOU TCHAPTCHIE, Boris; kouakep, yannick tchaptchie",2
+relaxed::A1_tokenbag_exact::37838,datacite::10.13140/rg.2.2.33056.29440,datacite::10.5281/zenodo.15708015,parent - duplicate (Zenodo),ResearchGate,2025-06-21,Detailed Proof of the Twin Prime Conjecture,detailed proof of the twin prime conjecture,Kemayou Tchaptchie; Kouakep Tchaptchié Yannick,2

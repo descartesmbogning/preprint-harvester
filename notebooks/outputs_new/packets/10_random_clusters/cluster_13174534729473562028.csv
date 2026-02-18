@@ -1,0 +1,3 @@
+dup_group_id,record_id,parent_record_id,records_hierarchy,server_name,date_first_seen,title,title_clean_v2,authors_flat,cluster_size
+13174534729473562028,openalex::W3122194050,crossref::10.2139/ssrn.2331995,parent - duplicate (SSRN),RePEc: Research Papers in Economics,2013-01-01,Net interoffice accounts of global banks: the role of domestic funding,net interoffice accounts of global banks the role of domestic funding,Carmela D’Avino,2
+13174534729473562028,crossref::10.2139/ssrn.2331995,,parent,SSRN,2013-01-01,Net Interoffice Accounts of Global Banks: The Role of Domestic Funding,net interoffice accounts of global banks the role of domestic funding,"D'Avino, Carmela",2

@@ -1,0 +1,3 @@
+dup_group_id,record_id,parent_record_id,records_hierarchy,server_name,date_first_seen,title,title_clean_v2,authors_flat,cluster_size
+datacite::10.48550/arxiv.2205.03191,datacite::10.48550/arxiv.2205.03191,,parent,arXiv,2022-05-09,Distribution of 3-regular and 5-regular partitions,distribution of 3 regular and 5 regular partitions,"Zheng, Qi-Yang",2
+datacite::10.48550/arxiv.2205.03191,datacite::10.48550/arxiv.2206.03696,datacite::10.48550/arxiv.2205.03191,parent - duplicate (arXiv),arXiv,2022-06-09,Divisibility and distribution of 5-regular partitions,divisibility and distribution of 5 regular partitions,"Zheng, Qi-Yang",2

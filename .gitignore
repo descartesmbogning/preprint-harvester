@@ -1,114 +1,186 @@
 # ============================================================
-# Python
+# 0) Repo hygiene / OS / Editors
 # ============================================================
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors / IDE
+.vscode/
+.idea/
+*.iml
+
+# ============================================================
+# 1) Python build artifacts
+# ============================================================
+
 __pycache__/
 *.py[cod]
-*.pyo
 *.pyd
 *.so
+*.egg-info/
+build/
+dist/
+pip-wheel-metadata/
 
-# Virtual environments
+# ============================================================
+# 2) Virtual environments
+# ============================================================
+
 .venv/
 venv/
 env/
 ENV/
+.python-version
 
 # ============================================================
-# Jupyter / Interactive
+# 3) Testing / coverage
 # ============================================================
+
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# ============================================================
+# 4) Jupyter / notebooks
+# ============================================================
+
 .ipynb_checkpoints/
 *.nbconvert.ipynb
 
-# ============================================================
-# Data files (DO NOT version harvested data)
-# ============================================================
-data/
-data_old/
-datasets/
-outputs/
-exports/
-downloads/
-docs/
-by_server/
-all_backends/
-old/
+# If you export notebooks as HTML/PDF
+*.html
+*.pdf
 
-# Large research outputs
-*.csv
-*.tsv
-*.parquet
-*.feather
-*.pkl
-*.pickle
-*.jsonl
-*.ndjson
+# Ignore old notebooks folder (your specific case)
+notebooks/old notebooks/
 
-# Keep example files if needed
-!data/example/
-!data/example/**
+# Optional: if you generate tons of scratch notebooks
+notebooks/scratch/
+notebooks/tmp/
 
 # ============================================================
-# Logs & temporary files
+# 5) Secrets / credentials (NEVER commit)
 # ============================================================
-*.log
-*.tmp
-*.temp
-*.swp
-*.bak
 
-# ============================================================
-# Environment & secrets
-# ============================================================
 .env
 .env.*
 secrets/
 credentials/
 *.key
 *.pem
+*.p12
+*.crt
 
 # ============================================================
-# OS-specific
+# 6) Logs / temp / caches
 # ============================================================
-# macOS
-.DS_Store
 
-# Windows
-Thumbs.db
-desktop.ini
-
-# ============================================================
-# Editors / IDEs
-# ============================================================
-.vscode/
-.idea/
-*.iml
+*.log
+*.tmp
+*.temp
+*.swp
+*.bak
+.cache/
+logs/
+tmp/
 
 # ============================================================
-# Testing / coverage
+# 7) Data outputs (research projects)
+#    Default: DO NOT version large or derived data
 # ============================================================
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
+
+# Common data/output folders
+data/
+data_old/
+datasets/
+downloads/
+exports/
+outputs/
+results/
+runs/
+artifacts/
+reports/_build/
+site/
+docs/_build/
+
+# Domain-specific output folders (optional)
+by_server/
+all_backends/
+
+old/
+# ============================================================
+# 8) Large research file types (block by default)
+# ============================================================
+
+*.csv
+*.tsv
+*.xlsx
+*.parquet
+*.feather
+*.pkl
+*.pickle
+*.jsonl
+*.ndjson
+*.arrow
+*.h5
+*.hdf5
+*.sqlite
+*.db
+*.gz
+*.zip
+*.7z
+
+# Figures (optional: keep if you want versioned figures)
+# If you DO want to keep figures, comment these out.
+*.png
+*.jpg
+*.jpeg
+*.tiff
+*.gif
+*.svg
 
 # ============================================================
-# Packaging / build
+# 9) Keep lightweight examples / schemas / small fixtures
 # ============================================================
-build/
-dist/
-*.egg-info/
+
+# Example data (tiny)
+!data/example/
+!data/example/**
+
+# Keep documentation sources
+!docs/
+!docs/**
 
 # ============================================================
-# GitHub / CI artifacts
+# 10) Whitelist tracked output folders (your specific need)
+#     Example: track "notebooks/outputs_new/packets" even if it
+#     contains csv/parquet/pkl/jsonl, etc.
 # ============================================================
+
+!notebooks/outputs_new/
+!notebooks/outputs_new/packets/
+!notebooks/outputs_new/packets/**
+
+
+!notebooks/outputs_new/tracker_data/
+!notebooks/outputs_new/tracker_data/**
+# TIP: If packets files are huge, consider Git LFS instead of normal git.
+
+# ============================================================
+# 11) Project-specific ignores (optional)
+# ============================================================
+
+# If you have a single notebook you never want committed
+notebooks/02_versioning_patterns.ipynb
+
+# Common copy artifacts
+*Copy*.ipynb
+
 .cache/
 vscode_scripts.txt
-# Large local datasets
-/data_old/
-*.csv.gz
-*.parquet
-*.pkl
-
-
-*Copy*.ipynb
-02_versioning_patterns.ipynb

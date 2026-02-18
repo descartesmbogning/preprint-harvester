@@ -1,0 +1,3 @@
+dup_group_id,record_id,parent_record_id,records_hierarchy,server_name,date_first_seen,title,title_clean_v2,authors_flat,cluster_size
+openalex::W1518844998,openalex::W1518844998,,parent,RePEc: Research Papers in Economics,1998-01-01,ZIP: Stata module to estimate zero inflated Poisson model on count data,zip stata module to estimate zero inflated poisson model on count data,Jesper Sørensen,2
+openalex::W1518844998,openalex::W1571230436,openalex::W1518844998,parent - duplicate (RePEc: Research Papers in Economics),RePEc: Research Papers in Economics,1998-09-01,ZINB: Stata module to estimate zero inflated negative binomial model on count data,zinb stata module to estimate zero inflated negative binomial model on count data,Jesper Sørensen,2

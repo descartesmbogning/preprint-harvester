@@ -1,0 +1,3 @@
+dup_group_id,record_id,parent_record_id,records_hierarchy,server_name,date_first_seen,title,title_clean_v2,authors_flat,cluster_size
+crossref::10.2139/ssrn.355586,crossref::10.2139/ssrn.355586,,parent,SSRN,2000-01-01,Caution and Conservatism in the Making of Monetary Policy,caution and conservatism in the making of monetary policy,"Schellekens, Philip",2
+crossref::10.2139/ssrn.355586,openalex::W3124197643,crossref::10.2139/ssrn.355586,parent - duplicate (EconStor Preprints),EconStor Preprints,2000-07-01,Caution and Conservatism in the Making of Monetary Policy,caution and conservatism in the making of monetary policy,Philip Schellekens,2
