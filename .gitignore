@@ -184,3 +184,6 @@ notebooks/02_versioning_patterns.ipynb
 
 .cache/
 vscode_scripts.txt
+
+
+notebooks/sheet_writer_key/
