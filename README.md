@@ -1,350 +1,129 @@
-# 🧬 Preprint Harvester
+🌍 Global Preprint Dataset (1990–2025)
 
-### **Crossref × DataCite × OpenAlex — Unified Metadata Harvester for Preprint Servers**
+This repository provides a harmonized global dataset of preprints spanning the period 1990–2025, together with the fully reproducible pipeline used to construct it.
 
-**Author:** .....  
-**License:** MIT  
-**Status:** Public Release v1.0
+The dataset integrates metadata from multiple scholarly infrastructures and resolves version relationships to provide both record-level and cluster-level representations of scholarly works.
 
----
+Our goal is to support large-scale research on preprints, scholarly communication, and open science by providing a transparent, reproducible, and extensible data resource.
 
-## ⭐ Overview
+📦 Repository Contents
+Data
 
-**Preprint Harvester** is a unified Python toolkit designed to automatically collect preprint metadata across **Crossref**, **DataCite**, and **OpenAlex**.
+The repository includes several derived datasets:
 
-The toolkit reads a **Google Sheet–like rules table** that specifies how each preprint server should be queried, depending on:
+Harmonized Records Dataset
+Unified metadata for individual preprint records collected from multiple sources.
 
-* DOI prefixes  
-* Crossref group titles  
-* Members  
-* Institution names  
-* Domain-based URL patterns  
-* DataCite client IDs  
-* OpenAlex source IDs  
+Parent Cluster Dataset
+Aggregated representation of preprint families, where multiple versions are linked into a single parent work.
 
-It supports:
+Aggregated Metrics
+Summary statistics describing temporal trends, infrastructures, and dataset characteristics.
 
-✔ Multi-provider harvesting  
-✔ Automatic output per server  
-✔ Date-range filtering  
-✔ Dry-run mode (no API calls)  
-✔ Export to Parquet and CSV  
-✔ Summary report generation  
-✔ Reproducible metadata pipelines  
+Tracker Outputs
+Intermediate files used to monitor harmonization, deduplication, and clustering processes.
 
----
+⚠️ Depending on repository size constraints, some large files may be distributed via external storage or release artifacts.
 
-## 📌 Key Features
+Code
 
-### 🔍 1. Multi-backend harvesting
+The pipeline is organized into modular components:
 
-* **Crossref**: prefix / member / group-title / domain / DOI-first-token  
-* **DataCite**: client-id + resource-type filters  
-* **OpenAlex**: primary_location.source.id + optional preprint filter  
+Harvesting Scripts
+Data acquisition from scholarly infrastructures and metadata providers.
 
-### 🗂 2. Sheet-driven rules
+Harmonization Pipeline
+Metadata normalization and enrichment across heterogeneous sources.
 
-Supports a full rule specification from a spreadsheet with columns:
+Deduplication and Clustering
+Algorithms for identifying related versions and grouping them into clusters.
 
-```text
-Field_server_name
-include
-rules
-rule_1 … rule_7
-prefixes
-members
-group_title
-institution_name
-primary_domain
-primary_domain_extend
-doi_prefix_first_token
-client_id
-source_id
-```
+Parent Construction
+Creation of representative parent records for each work family.
 
-### 📁 3. Reproducible outputs
+Metrics Generation
+Scripts to compute descriptive statistics and dataset summaries.
 
-For each server:
+All steps are designed to be reproducible from raw data sources.
 
-```text
-/data/by_server/<SERVER_NAME>/
-    server_YYYY-MM-DD_YYYY-MM-DD_crossref.parquet
-    server_YYYY-MM-DD_YYYY-MM-DD_crossref.csv
-    server_YYYY-MM-DD_YYYY-MM-DD_datacite.parquet
-    server_YYYY-MM-DD_YYYY-MM-DD_openalex.parquet
-```
+⭐ Key Features
 
-Plus a global summary CSV.
+Multi-infrastructure integration
+Combines data from multiple preprint ecosystems.
 
-### 🧪 4. Dry-run mode
+Adaptive server identification
+Flexible methods for identifying preprint servers across heterogeneous metadata.
 
-Prints **exact API parameters** without calling the APIs.
+Version clustering
+Detection and linking of multiple versions of the same scholarly work.
 
-### 🛡 5. Compliant with API best practices
+Parent record representation
+Creation of unified work-level entities from versioned records.
 
-* Uses polite `mailto=`  
-* Retries for rate limits  
-* Cursor-based pagination  
+Fully reproducible pipeline
+End-to-end workflow from raw metadata to final dataset.
 
----
+Open and interoperable formats
+Data provided in standard formats suitable for large-scale analysis.
 
-# 📦 Installation
+🎯 Intended Uses
 
-### 1. Clone the repository
+The dataset supports research and analysis in:
 
-```bash
-git clone https://github.com/YOUR_USERNAME/preprint-harvester.git
-cd preprint-harvester
-```
+Scholarly communication studies
 
-### 2. Install dependencies
+Bibliometrics and scientometrics
 
-```bash
-pip install -r requirements.txt
-```
+Science of Science (SciSci)
 
-### 3. (Optional) Install in development mode
+Open science and preprint policy
 
-```bash
-pip install -e .
-```
+Research infrastructure evaluation
 
----
+Reproducibility and metadata quality research
 
-# 📊 Input: Rules Sheet Format
+🔁 Reproducibility
 
-The program expects a **CSV downloaded from Google Sheets**.
+All processing steps are fully documented.
 
-Example minimal structure:
+The dataset can be reproduced from raw sources using the scripts provided in this repository.
 
-| Field_server_name | include | rules              | client_id    | source_id     | prefixes   | group_title              | primary_domain |
-| ----------------- | ------- | ------------------ | ------------ | ------------- | ---------- | ------------------------ | -------------- |
-| Preprints.org     | yes     | prefix             |              |               | [10.20944] |                          |                |
-| OSF Preprints     | yes     | group_title        |              |               |            | [Open Science Framework] |                |
-| CERN Doc Server   | yes     | client_id/preprint | ["cern.cds"] |               |            |                          |                |
-| engrxiv           | yes     | source_id          |              | ["s4306401442"] |            |                          |                |
+The pipeline includes:
 
-Fields may contain: `"a,b"`, `"[a,b]"`, or a single value.
+Data acquisition
 
----
+Metadata harmonization
 
-# 🚀 Usage
+Version detection
 
-## 🔧 Running the harvester
+Clustering and parent construction
 
-The main entry point is:
+Metrics generation
 
-```text
-scripts/run_harvest_from_sheet.py
-```
+📖 Documentation
 
-or directly via Python:
+Additional documentation will include:
 
-```python
-from preprint_harvester.harvesters import harvest_servers_from_rules_sheet
+Data schema description
 
-harvest_servers_from_rules_sheet(
-    sheet_csv_path_or_url="rules.csv",
-    date_start="2025-01-01",
-    date_end="2025-01-15",
-    mailto="your.email@domain.com",
-    dry_run=False
-)
-```
+Pipeline methodology
 
----
+Validation procedures
 
-# 🧪 Dry Run (No API calls)
-
-To print all constructed API parameters *without querying APIs*:
-
-```python
-harvest_servers_from_rules_sheet(
-    "rules.csv",
-    date_start="2025-01-01",
-    date_end="2025-01-15",
-    mailto="your.email@example.com",
-    dry_run=True
-)
-```
+Usage examples
 
-You will see printed:
+📚 Citation
 
-* Resolved Crossref filters  
-* DataCite query + resource_type  
-* OpenAlex API query  
-* API URL examples  
+Citation information will be provided upon publication of the associated manuscript.
 
----
+If you use this dataset before formal publication, please cite this repository.
 
-# 🔍 Example API Calls (Automatically printed in summary)
+📜 License
 
-### **Crossref Example**
+License information will be added.
 
-```text
-https://api.crossref.org/works?filter=from-posted-date:2025-01-01T00:00:00,
-until-posted-date:2025-01-15T23:59:59,prefix:10.20944&type:posted-content
-&rows=1000&cursor=*&mailto=you@example.com
-```
+🤝 Contributions
 
-### **DataCite Example**
+Contributions, issues, and suggestions are welcome.
 
-```text
-https://api.datacite.org/dois
-  ?client-id=cern.cds
-  &resource-type-id=Preprint
-  &query=registered:[2025-01-01 TO 2025-01-15]
-  &page[size]=1000
-  &page[cursor]=1
-```
-
-### **OpenAlex Example**
-
-```text
-https://api.openalex.org/works
-  ?filter=type:preprint,
-           primary_location.source.id:s4306402450,
-           from_publication_date:2025-01-01,
-           to_publication_date:2025-01-15
-  &per-page=200
-  &cursor=*
-  &mailto=you@example.com
-```
-
----
-
-# 📁 Output Structure
-
-After running the harvester:
-
-```text
-data/
-└── by_server/
-    ├── Preprints.org/
-    │   ├── Preprints.org_2025-01-01_2025-01-15_crossref.parquet
-    │   └── Preprints.org_2025-01-01_2025-01-15_crossref.csv
-    ├── OSF Preprints/
-    ├── CERN Document Server/
-    └── engrxiv/
-harvest_summary_2025-01-01_2025-01-15_real.csv
-```
-
-Each folder contains **Crossref**, **DataCite**, and/or **OpenAlex** results depending on rules.
-
----
-
-# 🧱 Directory Layout
-
-```text
-preprint-harvester/
-│
-├── README.md
-├── LICENSE
-├── requirements.txt
-│
-├── src/
-│   └── preprint_harvester/
-│       ├── __init__.py
-│       └── harvesters.py
-│
-├── scripts/
-│   └── run_harvest_from_sheet.py
-│
-├── examples/
-│   ├── example_rules_sheet.csv
-│   └── example_usage.ipynb
-│
-├── tests/
-│
-└── data/
-```
-
----
-
-# 📖 Example Notebook
-
-See:
-
-```text
-/examples/example_usage.ipynb
-```
-
-It includes:
-
-* Loading rules  
-* Running dry-run  
-* Fetching Crossref, DataCite, OpenAlex  
-* Merging results  
-* Displaying metadata  
-
----
-
-# 🧪 Testing
-
-Minimal example:
-
-```bash
-pytest tests/
-```
-
-You can add mock-based tests for:
-
-* Parameter building  
-* Filtering  
-* Fake API responses  
-
----
-
-# ⚠️ Troubleshooting
-
-### ❗ 1. Crossref returns 429 Too Many Requests
-
-Solution:
-
-* Reduce `rows_per_call`  
-* Add sleep time via polite_sleep  
-* Ensure correct `mailto=`  
-
-### ❗ 2. DataCite returns zero results
-
-Check:
-
-* `client_id` spelling  
-* date range  
-* resource-type combination  
-
-### ❗ 3. OpenAlex returns no preprints
-
-Make sure:
-
-* The source actually deposits preprints  
-* Remove `only_preprints=True` to test  
-
----
-
-# 🤝 Contributing
-
-All contributions are welcome!
-
-1. Fork the repo  
-2. Create a new branch  
-3. Submit a pull request  
-
-Please format code with:
-
-```bash
-black .
-isort .
-```
-
----
-
-# 📚 Citation
-
-If you use this tool in research:
-
-```text
-...... (2025).
-Preprint Harvester: Unified Crossref–DataCite–OpenAlex Metadata Harvester.
-GitHub Repository.
-```
+Please open an issue to discuss proposed improvements or extensions.

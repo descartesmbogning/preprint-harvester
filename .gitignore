@@ -187,3 +187,5 @@ vscode_scripts.txt
 
 
 notebooks/sheet_writer_key/
+
+*/.ipynb_checkpoints
