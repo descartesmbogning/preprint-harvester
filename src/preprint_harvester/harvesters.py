@@ -2089,29 +2089,6 @@ def _fetch_work_by_doi(doi, max_retries=6, base_sleep=0.5):
         raise last_exc
 
 
-# def _extract_relations(rel):
-#     """Extract is-preprint-of / has-preprint / is-version-of / has-review lists from Crossref."""
-#     if not rel or not isinstance(rel, dict):
-#         return (None, None, None, None)
-
-#     def pick(kind):
-#         items = rel.get(kind) or []
-#         dois = []
-#         for it in items:
-#             doi = it.get("id")
-#             if doi and isinstance(doi, str) and doi.lower().startswith("https://doi.org/"):
-#                 doi = doi.split("org/", 1)[1]
-#             if doi:
-#                 dois.append(str(doi).strip())
-#         return "; ".join(sorted(set(dois))) if dois else None
-
-#     return (
-#         pick("is-preprint-of"),
-#         pick("has-preprint"),
-#         pick("is-version-of"),
-#         pick("has-review"),   # ✅ NEW
-#     )
-
 
 def _one_row_wide(m):
     """Flatten Crossref message into a rich, wide dict."""
@@ -2135,16 +2112,7 @@ def _one_row_wide(m):
 
     is_preprint_of, has_preprint, is_version_of, has_review = _extract_relations_crossref(m.get("relation"))
     relation_json          = _json(m.get("relation"))
-
-    # # then ALWAYS merge into final column (not overwrite)
-    # existing_is_version_of = df.get("is_version_of")  # could be None or a string
-
-    # # ut["is_preprint_of"] = merge_dois(df.get("is_preprint_of"), is_preprint_of)
-    # # ut["has_preprint"]   = merge_dois(df.get("has_preprint"), has_preprint)
-    # # ut["has_review"]     = merge_dois(df.get("has_review"), has_review)
-
-    # # IMPORTANT: include your old behavior + relation-derived versions (incl updated-*)
-    # ut["is_version_of"]  = merge_dois(existing_is_version_of, is_version_of_rel)
+    
 
     authors_pretty = None
     if m.get("author"):

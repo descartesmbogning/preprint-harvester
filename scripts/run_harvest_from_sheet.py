@@ -54,9 +54,15 @@ servers_to_test = [
     # "arXiv",
     'HAL', # 1990-2009 errors on harvest / 2012
     'RePEc: Research Papers in Economics',
+
+    'bioRxiv',
+    'medRxiv',
+    'PsyArXiv',
+    'chemRxiv',
+    
 ]
 
-DO_DRY_RUN = False
+DO_DRY_RUN = True # False
 
 summary = harvest_servers_from_rules_sheet(
     sheet_csv_path_or_url=SHEET_CSV,
