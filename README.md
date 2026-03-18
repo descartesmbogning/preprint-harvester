@@ -312,7 +312,7 @@ This step builds the final datasets and tracking outputs.
 ---
 
 ## How the Pipeline Flows
-
+```
 Stage 1 → data/by_server/
 ↓
 Stage 2 → outputs_new/ (with dates)
@@ -322,9 +322,7 @@ Stage 3 → outputs_new/ (clusters)
 Stage 4 → outputs_new/ (parent records)
 ↓
 Stage 5 → outputs_new/ (final datasets)
-
-
-
+```
 
 ---
 
