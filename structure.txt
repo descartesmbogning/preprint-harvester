@@ -1,0 +1,231 @@
+.
+├── README.md
+├── data
+│   ├── SSRNData
+│   │   └── SSRNData.txt
+│   ├── SSRNData.zip
+│   ├── by_server
+│   │   ├── AIJR_Preprints
+│   │   ├── AMRC_Open_Research
+│   │   ├── APSA_Preprints
+│   │   ├── ARPHA_Preprints
+│   │   ├── ART-Dok
+│   │   ├── Advance
+│   │   ├── AfricArXiv
+│   │   ├── AgEcon_Search
+│   │   ├── AgriRxiv
+│   │   ├── Arabixiv
+│   │   ├── Authorea_Inc.
+│   │   ├── Beilstein_Archives
+│   │   ├── Bepress_Legal_Repository
+│   │   ├── BioHackrXiv
+│   │   ├── BodoArXiv
+│   │   ├── CERN_document_server
+│   │   ├── Cambridge_Open_Engage
+│   │   ├── ChemRxiv
+│   │   ├── CoP
+│   │   ├── CogPrints
+│   │   ├── Covid-19_Preprints
+│   │   ├── CrimRxiv
+│   │   ├── CrossAsia-Repository
+│   │   ├── DSpace@MIT
+│   │   ├── Digital_Access_to_Scholarship_at_Harvard_(DASH)_(H
+│   │   ├── E-LIS_Repository
+│   │   ├── ECSarXiv
+│   │   ├── EGUsphere
+│   │   ├── ELPUB_(Universitat_Wuppertal)
+│   │   ├── EarthArXiv
+│   │   ├── Earth_and_Space_Science_Open_Archive
+│   │   ├── EasyChair_preprint
+│   │   ├── EcoEvoRxiv
+│   │   ├── EconStor_Preprints
+│   │   ├── EdArXiv
+│   │   ├── Electron_Colloquium_Comput_Complex
+│   │   ├── EmeRI
+│   │   ├── Encyclopedia
+│   │   ├── EnerarXiv
+│   │   ├── F1000Research
+│   │   ├── FocUS_Archive
+│   │   ├── Frenxiv
+│   │   ├── Gates_Open_Research
+│   │   ├── HAL
+│   │   ├── HANS_Publication_PrePrints
+│   │   ├── HRB_Open_Research
+│   │   ├── Humanities_Commons_CORE
+│   │   ├── IACR_Cryptology_ePrint_Archive
+│   │   ├── INA-Rxiv
+│   │   ├── IndiaRxiv
+│   │   ├── JMIR_Preprints
+│   │   ├── Jxiv
+│   │   ├── Keldysh_Institute_Preprints
+│   │   ├── LIS_Scholarship_Archive
+│   │   ├── LSE_Research_Online_Documents_on_Economics
+│   │   ├── LatArXiv
+│   │   ├── Law_Archive
+│   │   ├── MNI_Open_Research
+│   │   ├── MarXiv
+│   │   ├── MediArXiv
+│   │   ├── MetaArXiv
+│   │   ├── MindRxiv
+│   │   ├── Munich_Personal_RePEc_Archive
+│   │   ├── National_Bureau_of_Economic_Research
+│   │   ├── Nature_Precedings
+│   │   ├── NewAddictionsX
+│   │   ├── NutriXiv
+│   │   ├── Open_Research_Africa
+│   │   ├── Open_Research_Europe
+│   │   ├── Open_Science_Framework
+│   │   ├── Organic_Eprints
+│   │   ├── Oroboros_Instruments
+│   │   ├── PMSE_Preprints
+│   │   ├── PREPRINTS.RU
+│   │   ├── PaleorXiv
+│   │   ├── PeerJ_Preprints
+│   │   ├── PhilSci-Archive
+│   │   ├── PoolText
+│   │   ├── Preprints.org
+│   │   ├── Prepublicaciones_OpenCiencia
+│   │   ├── PropylaeumDok
+│   │   ├── PsyArXiv
+│   │   ├── Qeios
+│   │   ├── RePEc_Research_Papers_in_Economics
+│   │   ├── ResearchGate
+│   │   ├── ResearchHub
+│   │   ├── Research_Square
+│   │   ├── SAE_Mobilus®
+│   │   ├── SSRN
+│   │   ├── SciELO_Preprints
+│   │   ├── ScienceOpen_Preprints
+│   │   ├── Sciencepaper_Online
+│   │   ├── SocArXiv
+│   │   ├── Social_Science_Open_Access_Repository
+│   │   ├── SportRxiv
+│   │   ├── TechRxiv
+│   │   ├── Therapoid
+│   │   ├── Thesis_Commons
+│   │   ├── UCL_Open_Environment
+│   │   ├── UnisaRxiv
+│   │   ├── VeriXiv
+│   │   ├── Wellcome_Open_Research
+│   │   ├── WikiJournal_of_Humanities
+│   │   ├── WikiJournal_of_Medicine
+│   │   ├── WikiJournal_of_Science
+│   │   ├── Zenodo
+│   │   ├── arXiv
+│   │   ├── bioRxiv
+│   │   ├── eLife
+│   │   ├── engrXiv
+│   │   ├── harvest_summary_1990-01-01_2009-12-31_2026-01-06T03-13-57_real.csv
+│   │   ├── harvest_summary_1990-01-01_2020-12-31_2026-01-05T22-56-59_real.csv
+│   │   ├── harvest_summary_1990-01-01_2022-03-02_2026-01-12T00-59-28_real.csv
+│   │   ├── harvest_summary_1990-01-01_2025-12-31_2026-01-06T01-55-10_real.csv
+│   │   ├── harvest_summary_1990-01-01_2025-12-31_2026-01-06T02-57-01_real.csv
+│   │   ├── harvest_summary_1990-01-01_2025-12-31_2026-01-07T05-51-48_real.csv
+│   │   ├── harvest_summary_1990-01-01_2025-12-31_2026-01-07T06-10-50_real.csv
+│   │   ├── harvest_summary_1990-01-01_2025-12-31_2026-01-07T06-18-22_real.csv
+│   │   ├── harvest_summary_1990-01-01_2025-12-31_2026-01-07T21-55-11_real.csv
+│   │   ├── harvest_summary_1990-01-01_2025-12-31_2026-01-07T22-22-26_real.csv
+│   │   ├── harvest_summary_1990-01-01_2025-12-31_2026-01-07T23-19-23_real.csv
+│   │   ├── harvest_summary_1990-01-01_2025-12-31_2026-01-10T16-01-56_real.csv
+│   │   ├── harvest_summary_1990-01-01_2025-12-31_2026-03-11T17-04-54_real.csv
+│   │   ├── harvest_summary_1990-01-01_2025-12-31_2026-03-11T17-08-26_dry.csv
+│   │   ├── harvest_summary_1990-01-01_2025-12-31_2026-03-11T17-09-32_dry.csv
+│   │   ├── harvest_summary_2010-01-01_2010-12-31_2026-01-06T07-50-10_real.csv
+│   │   ├── harvest_summary_2010-01-01_2010-12-31_2026-01-06T08-06-37_real.csv
+│   │   ├── harvest_summary_2010-01-01_2010-12-31_2026-01-06T08-09-03_real.csv
+│   │   ├── harvest_summary_2010-01-01_2010-12-31_2026-01-06T09-44-14_real.csv
+│   │   ├── harvest_summary_2011-01-01_2011-12-31_2026-01-07T07-55-45_real.csv
+│   │   ├── harvest_summary_2011-01-01_2014-12-31_2026-01-07T07-34-25_real.csv
+│   │   ├── harvest_summary_2011-01-01_2015-12-31_2026-01-06T09-56-42_real.csv
+│   │   ├── harvest_summary_2012-01-01_2012-12-31_2026-01-07T08-14-53_real.csv
+│   │   ├── harvest_summary_2012-01-01_2012-12-31_2026-01-07T08-31-54_real.csv
+│   │   ├── harvest_summary_2012-01-01_2012-12-31_2026-01-07T09-17-01_real.csv
+│   │   ├── harvest_summary_2012-01-01_2016-12-31_2026-01-07T15-20-11_real.csv
+│   │   ├── harvest_summary_2012-01-01_2016-12-31_2026-01-07T20-19-25_real.csv
+│   │   ├── harvest_summary_2013-01-01_2013-12-31_2026-01-07T09-00-35_real.csv
+│   │   ├── harvest_summary_2016-01-01_2017-12-31_2026-01-06T11-00-01_real.csv
+│   │   ├── harvest_summary_2016-01-01_2020-12-31_2026-01-06T10-36-54_real.csv
+│   │   ├── harvest_summary_2017-01-01_2019-12-31_2026-01-07T14-49-46_real.csv
+│   │   ├── harvest_summary_2020-01-01_2021-12-31_2026-01-07T14-36-11_real.csv
+│   │   ├── harvest_summary_2021-01-01_2021-05-31_2026-01-06T11-12-21_real.csv
+│   │   ├── harvest_summary_2021-01-01_2021-12-31_2026-01-06T11-13-55_real.csv
+│   │   ├── harvest_summary_2021-01-01_2021-12-31_2026-01-06T13-31-44_real.csv
+│   │   ├── harvest_summary_2021-01-01_2022-12-31_2026-01-05T23-17-51_real.csv
+│   │   ├── harvest_summary_2021-01-01_2023-12-31_2026-01-07T05-29-53_real.csv
+│   │   ├── harvest_summary_2021-01-01_2025-12-31_2026-01-06T11-06-04_real.csv
+│   │   ├── harvest_summary_2021-06-01_2021-12-31_2026-01-06T11-13-06_real.csv
+│   │   ├── harvest_summary_2022-01-01_2022-12-31_2026-01-06T13-33-10_real.csv
+│   │   ├── harvest_summary_2022-01-01_2022-12-31_2026-01-07T14-18-22_real.csv
+│   │   ├── harvest_summary_2022-03-03_2022-03-16_2026-01-11T23-40-07_real.csv
+│   │   ├── harvest_summary_2022-03-17_2022-12-31_2026-01-11T22-51-59_real.csv
+│   │   ├── harvest_summary_2023-01-01_2023-04-28_2026-01-10T13-14-53_real.csv
+│   │   ├── harvest_summary_2023-01-01_2023-04-28_2026-01-10T13-39-10_real.csv
+│   │   ├── harvest_summary_2023-01-01_2023-12-31_2026-01-05T23-41-50_real.csv
+│   │   ├── harvest_summary_2023-01-01_2023-12-31_2026-01-06T12-57-50_real.csv
+│   │   ├── harvest_summary_2023-01-01_2023-12-31_2026-01-07T14-14-21_real.csv
+│   │   ├── harvest_summary_2023-01-01_2025-12-31_2026-01-11T02-41-55_real.csv
+│   │   ├── harvest_summary_2024-01-01_2024-12-31_2026-01-06T00-13-34_real.csv
+│   │   ├── harvest_summary_2024-01-01_2024-12-31_2026-01-06T12-16-23_real.csv
+│   │   ├── harvest_summary_2024-01-01_2024-12-31_2026-01-07T14-12-57_real.csv
+│   │   ├── harvest_summary_2024-01-01_2025-12-31_2026-01-07T05-31-52_real.csv
+│   │   ├── harvest_summary_2025-01-01_2025-12-31_2026-01-06T01-09-11_real.csv
+│   │   ├── harvest_summary_2025-01-01_2025-12-31_2026-01-06T11-16-38_real.csv
+│   │   ├── harvest_summary_2025-01-01_2025-12-31_2026-01-07T09-25-16_real.csv
+│   │   ├── harvest_summary_2025-01-01_2025-12-31_2026-01-07T13-47-28_real.csv
+│   │   ├── harvest_summary_2025-01-01_2025-12-31_2026-01-07T13-54-25_real.csv
+│   │   ├── medRxiv
+│   │   ├── prepare@u
+│   │   ├── searchRxiv
+│   │   └── viXra
+│   └── tmp_duckdb
+├── merge_all_backends_fullschema.py
+├── merge_by_server_backends.py
+├── notebooks
+│   ├── 00_explore_metadata_patterns_and_identify_review_partof_records_to_exclude.ipynb
+│   ├── 00_ssrn_date_exploration.ipynb
+│   ├── 1_compute_earliest_public_appearance.ipynb
+│   ├── 2_identify_duplicate_and_versioned_records___title_author.ipynb
+│   ├── 3_identify_versioned_records___version_relationships.ipynb
+│   ├── 4_harmonize_cluster_identifiers_and_select_parent_records.ipynb
+│   ├── 5_generate_final_datasets.ipynb
+│   ├── 5_generate_tracker_files.ipynb
+│   ├── 5_update_google_sheet_file.ipynb
+│   ├── outputs_new
+│   │   ├── dedupe_audit_report.json
+│   │   ├── dedupe_clusters_long.csv
+│   │   ├── dedupe_clusters_long.pkl
+│   │   ├── dedupe_clusters_summary.csv
+│   │   ├── dedupe_data_group_merge.pkl
+│   │   ├── dedupe_data_out.parquet
+│   │   ├── dedupe_data_out_new_cols.csv
+│   │   ├── dedupe_data_out_new_cols.parquet
+│   │   ├── dedupe_data_out_version_links.parquet
+│   │   ├── dedupe_group_merge_metrics.json
+│   │   ├── dedupe_metrics.csv
+│   │   ├── dedupe_metrics.json
+│   │   ├── dedupe_metrics_version_links.json
+│   │   ├── dedupe_new_columns.parquet
+│   │   ├── dedupe_report.html
+│   │   ├── packets
+│   │   ├── parent
+│   │   ├── parent_version_index.csv
+│   │   ├── parent_version_index.parquet
+│   │   └── tracker_data
+│   └── sheet_writer_key
+│       └── preprint-tracker-credential.json
+├── preview_backends.py
+├── requirements.txt
+├── scripts
+│   ├── harvest_jxiv.py
+│   └── run_harvest_from_sheet.py
+├── src
+│   └── preprint_harvester
+│       ├── __init__.py
+│       ├── __pycache__
+│       └── harvesters.py
+├── structure.txt
+├── structure_clean.txt
+├── structure_clean2.txt
+└── vscode_scripts.txt
+
+129 directories, 100 files

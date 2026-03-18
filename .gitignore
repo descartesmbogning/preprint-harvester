@@ -96,7 +96,7 @@ tmp/
 # ============================================================
 
 # Common data/output folders
-data/
+# data/
 data_old/
 datasets/
 downloads/
@@ -110,7 +110,8 @@ site/
 docs/_build/
 
 # Domain-specific output folders (optional)
-by_server/
+# by_server/
+SSRNData/
 all_backends/
 
 old/
@@ -119,6 +120,7 @@ old/
 # ============================================================
 
 *.csv
+*_real.csv
 *.tsv
 *.xlsx
 *.parquet
@@ -190,4 +192,4 @@ notebooks/sheet_writer_key/
 
 */.ipynb_checkpoints
 
-structure*
+structure_clean*

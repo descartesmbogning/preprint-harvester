@@ -1,129 +1,184 @@
-🌍 Global Preprint Dataset (1990–2025)
+# Preprint Harvester — Pipeline and Repository Structure
 
-This repository provides a harmonized global dataset of preprints spanning the period 1990–2025, together with the fully reproducible pipeline used to construct it.
+## Overview
 
-The dataset integrates metadata from multiple scholarly infrastructures and resolves version relationships to provide both record-level and cluster-level representations of scholarly works.
+This project builds a global dataset of preprints (1990–2025).
 
-Our goal is to support large-scale research on preprints, scholarly communication, and open science by providing a transparent, reproducible, and extensible data resource.
+The pipeline follows five main stages:
 
-📦 Repository Contents
-Data
+1. Data collection + cleaning  
+2. Date processing  
+3. Deduplication  
+4. Parent selection  
+5. Final datasets  
 
-The repository includes several derived datasets:
 
-Harmonized Records Dataset
-Unified metadata for individual preprint records collected from multiple sources.
+---
 
-Parent Cluster Dataset
-Aggregated representation of preprint families, where multiple versions are linked into a single parent work.
+## Pipeline Stages
 
-Aggregated Metrics
-Summary statistics describing temporal trends, infrastructures, and dataset characteristics.
+### Stage 1 — Data collection + cleaning
 
-Tracker Outputs
-Intermediate files used to monitor harmonization, deduplication, and clustering processes.
+This stage collects metadata from multiple sources and prepares it in a common format.
 
-⚠️ Depending on repository size constraints, some large files may be distributed via external storage or release artifacts.
+It includes:
+- querying APIs and OAI-PMH sources  
+- assigning server and backend names  
+- basic field formatting  
+- storing records by server  
 
-Code
+**Main code**
+- `src/preprint_harvester/harvesters.py`
+- `scripts/run_harvest_from_sheet.py`
+- `scripts/harvest_jxiv.py`
 
-The pipeline is organized into modular components:
+**Main folders**
+- `data/by_server/`
 
-Harvesting Scripts
-Data acquisition from scholarly infrastructures and metadata providers.
+**Outputs**
+- server-level files in `data/by_server/`
+- harvest summaries (`harvest_summary_*.csv`)
 
-Harmonization Pipeline
-Metadata normalization and enrichment across heterogeneous sources.
+---
 
-Deduplication and Clustering
-Algorithms for identifying related versions and grouping them into clusters.
+### Stage 2 — Date processing
 
-Parent Construction
-Creation of representative parent records for each work family.
+This stage estimates when each record first appeared publicly.
 
-Metrics Generation
-Scripts to compute descriptive statistics and dataset summaries.
+It includes:
+- checking multiple date fields  
+- selecting the earliest valid date  
+- correcting SSRN records when needed  
 
-All steps are designed to be reproducible from raw data sources.
+**Main notebooks**
+- `notebooks/00_ssrn_date_exploration.ipynb`
+- `notebooks/1_compute_earliest_public_appearance.ipynb`
 
-⭐ Key Features
+**Outputs**
+- processed data in `notebooks/outputs_new/`
 
-Multi-infrastructure integration
-Combines data from multiple preprint ecosystems.
+---
 
-Adaptive server identification
-Flexible methods for identifying preprint servers across heterogeneous metadata.
+### Stage 3 — Deduplication
 
-Version clustering
-Detection and linking of multiple versions of the same scholarly work.
+This stage groups records that represent the same work.
 
-Parent record representation
-Creation of unified work-level entities from versioned records.
+It includes:
+- matching by title and authors  
+- matching using version relationships  
 
-Fully reproducible pipeline
-End-to-end workflow from raw metadata to final dataset.
+**Main notebooks**
+- `notebooks/2_identify_duplicate_and_versioned_records___title_author.ipynb`
+- `notebooks/3_identify_versioned_records___version_relationships.ipynb`
 
-Open and interoperable formats
-Data provided in standard formats suitable for large-scale analysis.
+**Outputs**
+- cluster files and metrics in `notebooks/outputs_new/`
 
-🎯 Intended Uses
+---
 
-The dataset supports research and analysis in:
+### Stage 4 — Parent selection
 
-Scholarly communication studies
+This stage selects one main record per group.
 
-Bibliometrics and scientometrics
+It includes:
+- harmonizing cluster identifiers  
+- selecting a parent record  
+- linking duplicates to the parent  
 
-Science of Science (SciSci)
+**Main notebook**
+- `notebooks/4_harmonize_cluster_identifiers_and_select_parent_records.ipynb`
 
-Open science and preprint policy
+**Outputs**
+- updated datasets in `notebooks/outputs_new/`
 
-Research infrastructure evaluation
+---
 
-Reproducibility and metadata quality research
+### Stage 5 — Final datasets
 
-🔁 Reproducibility
+This stage produces the final datasets and tracking outputs.
 
-All processing steps are fully documented.
+It includes:
+- building the final dataset  
+- generating parent index  
+- generating tracker files  
+- updating Google Sheet outputs  
 
-The dataset can be reproduced from raw sources using the scripts provided in this repository.
+**Main notebooks**
+- `notebooks/5_generate_final_datasets.ipynb`
+- `notebooks/5_generate_tracker_files.ipynb`
+- `notebooks/5_update_google_sheet_file.ipynb`
 
-The pipeline includes:
+**Outputs**
+- `parent_version_index.csv`
+- `parent_version_index.parquet`
+- `tracker_data/`
+- `parent/`
+- `packets/`
 
-Data acquisition
+All stored in:
+- `notebooks/outputs_new/`
 
-Metadata harmonization
+---
 
-Version detection
+## Repository Structure
 
-Clustering and parent construction
+The repository is organized to match the pipeline stages.
 
-Metrics generation
 
-📖 Documentation
 
-Additional documentation will include:
 
-Data schema description
+preprint-harvester/
+├── README.md
+├── data/
+│ ├── SSRNData/
+│ │ └── SSRNData.txt
+│ └── by_server/
+│ ├── AIJR_Preprints/
+│ ├── arXiv/
+│ ├── bioRxiv/
+│ ├── Jxiv/
+│ └── ...
+├── src/
+│ └── preprint_harvester/
+│ └── harvesters.py
+├── scripts/
+│ ├── run_harvest_from_sheet.py
+│ └── harvest_jxiv.py
+├── notebooks/
+│ ├── 00_explore_metadata_patterns_and_identify_review_partof_records_to_exclude.ipynb
+│ ├── 00_ssrn_date_exploration.ipynb
+│ ├── 1_compute_earliest_public_appearance.ipynb
+│ ├── 2_identify_duplicate_and_versioned_records___title_author.ipynb
+│ ├── 3_identify_versioned_records___version_relationships.ipynb
+│ ├── 4_harmonize_cluster_identifiers_and_select_parent_records.ipynb
+│ ├── 5_generate_final_datasets.ipynb
+│ ├── 5_generate_tracker_files.ipynb
+│ ├── 5_update_google_sheet_file.ipynb
+│ └── outputs_new/
+├── merge_by_server_backends.py
+├── merge_all_backends_fullschema.py
+├── preview_backends.py
+├── requirements.txt
+└── structure.txt
 
-Pipeline methodology
 
-Validation procedures
+---
 
-Usage examples
+## How Code Maps to the Pipeline
 
-📚 Citation
+| Stage | Description | Code / Notebook | Output |
+|------|------------|----------------|--------|
+| Stage 1 | Data collection + cleaning | `harvesters.py`, `run_harvest_from_sheet.py`, `harvest_jxiv.py` | `data/by_server/` |
+| Stage 2 | Date processing | `00_ssrn_date_exploration.ipynb`, `1_compute_earliest_public_appearance.ipynb` | `outputs_new/` |
+| Stage 3 | Deduplication | `2_*.ipynb`, `3_*.ipynb` | `outputs_new/` |
+| Stage 4 | Parent selection | `4_*.ipynb` | `outputs_new/` |
+| Stage 5 | Final datasets | `5_*.ipynb` | `outputs_new/` |
 
-Citation information will be provided upon publication of the associated manuscript.
+---
 
-If you use this dataset before formal publication, please cite this repository.
+## Summary
 
-📜 License
+- Raw data is stored in: `data/by_server/`  
+- Processed data is stored in: `notebooks/outputs_new/`  
+- Each stage is clearly separated in notebooks and scripts  
 
-License information will be added.
-
-🤝 Contributions
-
-Contributions, issues, and suggestions are welcome.
-
-Please open an issue to discuss proposed improvements or extensions.
