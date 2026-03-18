@@ -119,48 +119,48 @@ All stored in:
 - `notebooks/outputs_new/`
 
 ---
-
 ## Repository Structure
 
 The repository is organized to match the pipeline stages.
 
-
-
-
+```
 preprint-harvester/
 ├── README.md
 ├── data/
-│ ├── SSRNData/
-│ │ └── SSRNData.txt
-│ └── by_server/
-│ ├── AIJR_Preprints/
-│ ├── arXiv/
-│ ├── bioRxiv/
-│ ├── Jxiv/
-│ └── ...
+│   ├── SSRNData/
+│   │   └── SSRNData.txt
+│   ├── SSRNData.zip
+│   └── by_server/
+│       ├── AIJR_Preprints/
+│       ├── arXiv/
+│       ├── bioRxiv/
+│       ├── Jxiv/
+│       ├── medRxiv/
+│       └── ...
 ├── src/
-│ └── preprint_harvester/
-│ └── harvesters.py
+│   └── preprint_harvester/
+│       ├── __init__.py
+│       └── harvesters.py
 ├── scripts/
-│ ├── run_harvest_from_sheet.py
-│ └── harvest_jxiv.py
+│   ├── run_harvest_from_sheet.py
+│   └── harvest_jxiv.py
 ├── notebooks/
-│ ├── 00_explore_metadata_patterns_and_identify_review_partof_records_to_exclude.ipynb
-│ ├── 00_ssrn_date_exploration.ipynb
-│ ├── 1_compute_earliest_public_appearance.ipynb
-│ ├── 2_identify_duplicate_and_versioned_records___title_author.ipynb
-│ ├── 3_identify_versioned_records___version_relationships.ipynb
-│ ├── 4_harmonize_cluster_identifiers_and_select_parent_records.ipynb
-│ ├── 5_generate_final_datasets.ipynb
-│ ├── 5_generate_tracker_files.ipynb
-│ ├── 5_update_google_sheet_file.ipynb
-│ └── outputs_new/
+│   ├── 00_explore_metadata_patterns_and_identify_review_partof_records_to_exclude.ipynb
+│   ├── 00_ssrn_date_exploration.ipynb
+│   ├── 1_compute_earliest_public_appearance.ipynb
+│   ├── 2_identify_duplicate_and_versioned_records___title_author.ipynb
+│   ├── 3_identify_versioned_records___version_relationships.ipynb
+│   ├── 4_harmonize_cluster_identifiers_and_select_parent_records.ipynb
+│   ├── 5_generate_final_datasets.ipynb
+│   ├── 5_generate_tracker_files.ipynb
+│   ├── 5_update_google_sheet_file.ipynb
+│   └── outputs_new/
 ├── merge_by_server_backends.py
 ├── merge_all_backends_fullschema.py
 ├── preview_backends.py
 ├── requirements.txt
 └── structure.txt
-
+```
 
 ---
 
