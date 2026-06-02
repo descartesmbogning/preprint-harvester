@@ -19,7 +19,7 @@ if SRC not in sys.path:
     sys.path.insert(0, SRC)
 # -------------------------------------------------------------
 
-from preprint_harvester.harvesters import harvest_servers_from_rules_sheet
+from crossref_datacite_openalex_harvester.harvesters_crossref_datacite_openalex import harvest_servers_from_rules_sheet
 
 # -------------------------------------------------------------
 # Config from environment
@@ -45,28 +45,40 @@ SHEET_CSV = (
 )
 
 servers_to_test = [
-    "Open Science Framework",
-    "F1000Research",
-    "Gates Open Research",
-    "CERN document server",
-    "CrossAsia-Repository (Universität Heidelberg)",
-    "Organic Eprints",
-    # "arXiv",
-    'HAL', # 1990-2009 errors on harvest / 2012
-    'RePEc: Research Papers in Economics',
+    # "Open Science Framework",
+    # "F1000Research",
+    # "Gates Open Research",
+    # "CERN document server",
+    # "CrossAsia-Repository (Universität Heidelberg)",
+    # "Organic Eprints",
+    # # "arXiv",
+    # 'HAL', # 1990-2009 errors on harvest / 2012
+    # 'RePEc: Research Papers in Economics',
 
-    'bioRxiv',
-    'medRxiv',
-    'PsyArXiv',
-    'chemRxiv',
+    # 'bioRxiv',
+    # 'medRxiv',
+    # 'PsyArXiv',
+
+    #  after rule improvements, these are now working:
+    # 'UCL Open Environment',
+    # 'SSRN',
+    # 'searchRxiv',
+    # 'ScienceOpen Preprints',
+    # 'Qeios',
+    # 'EGUsphere',
+    # 'AMRC Open Research',
+    # 'eLife',
+    'CERN document server',
+    # 'Earth and Space Science Open Archive',
+    # 'ScienceOpen Preprints',
     
 ]
 
-DO_DRY_RUN = True # False
+DO_DRY_RUN = False #True # False
 
 summary = harvest_servers_from_rules_sheet(
     sheet_csv_path_or_url=SHEET_CSV,
-    servers=None, # specify None to do all servers in the sheet # servers_to_test
+    servers=servers_to_test, # specify None to do all servers in the sheet # servers_to_test
     date_start="1990-01-01", # "1990-01-01"
     date_end="2025-12-31", #date.today().isoformat(),  "2025-12-31"
     mailto=MAILTO,

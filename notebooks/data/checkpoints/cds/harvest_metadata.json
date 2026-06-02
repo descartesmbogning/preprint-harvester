@@ -1,0 +1,9 @@
+{
+  "server_name": "CERN Document Server",
+  "backend": "cds",
+  "endpoint": "https://cds.cern.ch/oai2d",
+  "harvest_timestamp": "2026-05-06T10:08:55.228566+00:00",
+  "record_year": 2002,
+  "estimated_total": null,
+  "checkpoint_files": 1
+}

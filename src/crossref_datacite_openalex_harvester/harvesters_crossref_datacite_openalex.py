@@ -903,9 +903,18 @@ def _extract_relations_datacite(related_ids: list | None):
 
         # --- Version relations ---
         elif rel_type in {
+            # "IsSupplementTo",
+            # "IsSupplementTo",
+            # "IsSupplementTo",
+            # "HasPart",
+            "IsIdenticalTo",
+            # "IsSupplementedBy",
+            # "IsSupplementTo",
             "IsNewVersionOf",
+            "IsVersionOf",
+            # "IsPartOf",
             "IsPreviousVersionOf",
-            "IsDerivedFrom",
+            "HasVersion",
         }:
             is_version_of.append(doi)
 

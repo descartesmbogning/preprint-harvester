@@ -402,6 +402,8 @@ def save_jxiv_outputs(
     parquet_path = server_dir / f"{base}.parquet"
     csv_gz_path = server_dir / f"{base}.csv.gz"
 
+    canon_df["server_name"] = "Jxiv"
+    canon_df["backend"] = "jxiv"
     canon_df.to_parquet(parquet_path, index=False)
     canon_df.to_csv(csv_gz_path, index=False, compression="gzip", encoding="utf-8-sig")
 
